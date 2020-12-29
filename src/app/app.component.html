@@ -1,0 +1,205 @@
+<pdf-viewer id="pdfShow" [src]="pdfSrc" [original-size]='false'
+            [fit-to-page]='false'
+             (click)="okay($event)"
+></pdf-viewer>
+
+<!--&lt;!&ndash;<h2>PDF Viewer</h2>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<mat-toolbar color="primary">&ndash;&gt;-->
+<!--&lt;!&ndash;  <mat-toolbar-row>&ndash;&gt;-->
+<!--&lt;!&ndash;    <span class="title">ng2-pdf-viewer</span>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <span class="description">Angular 5+ Component to render PDF</span>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <span class="spacer"></span>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <iframe src="https://ghbtns.com/github-btn.html?user=vadimdez&repo=ng2-pdf-viewer&type=star&count=true"&ndash;&gt;-->
+<!--&lt;!&ndash;      frameborder="0" scrolling="0" width="170px" height="20px"></iframe>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <a href="https://github.com/vadimdez/ng2-pdf-viewer" mat-raised-button>Get Started</a>&ndash;&gt;-->
+<!--&lt;!&ndash;  </mat-toolbar-row>&ndash;&gt;-->
+<!--&lt;!&ndash;</mat-toolbar>&ndash;&gt;-->
+
+<!--<mat-drawer-container class="example-container">-->
+<!--&lt;!&ndash;  <mat-drawer mode="side" opened>&ndash;&gt;-->
+<!--&lt;!&ndash;    <mat-form-field class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <input matInput type="text" placeholder="Set URL of the PDF file" [(ngModel)]="pdfSrc">&ndash;&gt;-->
+<!--&lt;!&ndash;    </mat-form-field>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="select-file__container">&ndash;&gt;-->
+<!--&lt;!&ndash;      <p>&ndash;&gt;-->
+<!--&lt;!&ndash;        Or render preview by just selecting PDF file (no upload required)&ndash;&gt;-->
+<!--&lt;!&ndash;      </p>&ndash;&gt;-->
+<!--&lt;!&ndash;      <input (change)="onFileSelected()" type="file" id="file">&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div *ngIf="error" class="error mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      {{ error.message | json }}&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-slide-toggle [(ngModel)]="originalSize">&ndash;&gt;-->
+<!--&lt;!&ndash;        Original size&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-slide-toggle>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb" [hidden]="!originalSize">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-slide-toggle [(ngModel)]="fitToPage">&ndash;&gt;-->
+<!--&lt;!&ndash;        Fit to page&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-slide-toggle>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-slide-toggle [(ngModel)]="renderText">&ndash;&gt;-->
+<!--&lt;!&ndash;        Render text layer&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-slide-toggle>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-slide-toggle [(ngModel)]="autoresize">&ndash;&gt;-->
+<!--&lt;!&ndash;        Auto resize&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-slide-toggle>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-slide-toggle [(ngModel)]="showAll">&ndash;&gt;-->
+<!--&lt;!&ndash;        Show all pages&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-slide-toggle>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <mat-form-field *ngIf="!originalSize">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-label>Select an option</mat-label>&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-select [(value)]="zoomScale">&ndash;&gt;-->
+<!--&lt;!&ndash;        <mat-option value="page-width">Page Width</mat-option>&ndash;&gt;-->
+<!--&lt;!&ndash;        <mat-option value="page-height">Page Height</mat-option>&ndash;&gt;-->
+<!--&lt;!&ndash;        <mat-option value="page-fit">Page Fit</mat-option>&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-select>&ndash;&gt;-->
+<!--&lt;!&ndash;    </mat-form-field>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <button (click)="incrementZoom(-0.1)" mat-button type="button">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"&ndash;&gt;-->
+<!--&lt;!&ndash;          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">&ndash;&gt;-->
+<!--&lt;!&ndash;          <circle cx="11" cy="11" r="8"></circle>&ndash;&gt;-->
+<!--&lt;!&ndash;          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>&ndash;&gt;-->
+<!--&lt;!&ndash;          <line x1="8" y1="11" x2="14" y2="11"></line>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <mat-form-field class="page-number">&ndash;&gt;-->
+<!--&lt;!&ndash;        <input matInput type="number" placeholder="Zoom" [(ngModel)]="zoom" pattern="-?[0-9]*(\.[0-9]+)?">&ndash;&gt;-->
+<!--&lt;!&ndash;        <mat-error>Input is not a number!</mat-error>&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-form-field>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <button (click)="incrementZoom(0.1)" mat-button type="button">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"&ndash;&gt;-->
+<!--&lt;!&ndash;          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">&ndash;&gt;-->
+<!--&lt;!&ndash;          <circle cx="11" cy="11" r="8"></circle>&ndash;&gt;-->
+<!--&lt;!&ndash;          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>&ndash;&gt;-->
+<!--&lt;!&ndash;          <line x1="11" y1="8" x2="11" y2="14"></line>&ndash;&gt;-->
+<!--&lt;!&ndash;          <line x1="8" y1="11" x2="14" y2="11"></line>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;    <div *ngIf="showAll" class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-slide-toggle [(ngModel)]="stickToPage">&ndash;&gt;-->
+<!--&lt;!&ndash;        Stick to page&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-slide-toggle>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div *ngIf="stickToPage && showAll || !showAll" class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <button (click)="incrementPage(-1)" mat-button type="button">&ndash;&gt;-->
+<!--&lt;!&ndash;        Previous&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <mat-form-field class="page-number">&ndash;&gt;-->
+<!--&lt;!&ndash;        <input matInput type="number" placeholder="Page" [(ngModel)]="page" pattern="-?[0-9]*(\.[0-9]+)?">&ndash;&gt;-->
+<!--&lt;!&ndash;        <mat-error>Input is not a number!</mat-error>&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-form-field>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <span *ngIf="pdf">of {{ pdf.numPages }}</span>&ndash;&gt;-->
+<!--&lt;!&ndash;      <button (click)="incrementPage(1)" mat-button type="button">&ndash;&gt;-->
+<!--&lt;!&ndash;        Next&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <button (click)="rotate(-90)" mat-button type="button" matTooltip="Rotate left" [matTooltipPosition]="'above'">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"&ndash;&gt;-->
+<!--&lt;!&ndash;          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="scale(-1,1)">&ndash;&gt;-->
+<!--&lt;!&ndash;          <polyline points="23 4 23 10 17 10"></polyline>&ndash;&gt;-->
+<!--&lt;!&ndash;          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <mat-form-field class="page-number">&ndash;&gt;-->
+<!--&lt;!&ndash;        <input matInput type="number" placeholder="Rotation" [ngModel]="rotation" disabled>&ndash;&gt;-->
+<!--&lt;!&ndash;        <mat-error>Input is not a number!</mat-error>&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-form-field>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <button (click)="rotate(90)" mat-button type="button" matTooltip="Rotate right" [matTooltipPosition]="'above'">&ndash;&gt;-->
+<!--&lt;!&ndash;        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"&ndash;&gt;-->
+<!--&lt;!&ndash;          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">&ndash;&gt;-->
+<!--&lt;!&ndash;          <polyline points="23 4 23 10 17 10"></polyline>&ndash;&gt;-->
+<!--&lt;!&ndash;          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>&ndash;&gt;-->
+<!--&lt;!&ndash;        </svg>&ndash;&gt;-->
+<!--&lt;!&ndash;      </button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div *ngIf="showAll" class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-slide-toggle [(ngModel)]="isOutlineShown">&ndash;&gt;-->
+<!--&lt;!&ndash;        Show outline&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-slide-toggle>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div *ngIf="showAll && isOutlineShown">&ndash;&gt;-->
+<!--&lt;!&ndash;      <ul *ngFor="let item of outline" class="outline-list">&ndash;&gt;-->
+<!--&lt;!&ndash;        <li>&ndash;&gt;-->
+<!--&lt;!&ndash;          <a (click)="navigateTo(item.dest)">&ndash;&gt;-->
+<!--&lt;!&ndash;            {{ item.title }}&ndash;&gt;-->
+<!--&lt;!&ndash;          </a>&ndash;&gt;-->
+
+<!--&lt;!&ndash;          <ul *ngFor="let child of item.items">&ndash;&gt;-->
+<!--&lt;!&ndash;            <li>&ndash;&gt;-->
+<!--&lt;!&ndash;              <a (click)="navigateTo(child.dest)">&ndash;&gt;-->
+<!--&lt;!&ndash;                {{ child.title }}&ndash;&gt;-->
+<!--&lt;!&ndash;              </a>&ndash;&gt;-->
+<!--&lt;!&ndash;            </li>&ndash;&gt;-->
+<!--&lt;!&ndash;          </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;        </li>&ndash;&gt;-->
+<!--&lt;!&ndash;      </ul>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="mb">&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-form-field>&ndash;&gt;-->
+<!--&lt;!&ndash;        <input #queryInp matInput id="pdfQueryInput" type="text" placeholder="Search..." [value]="pdfQuery"&ndash;&gt;-->
+<!--&lt;!&ndash;          (input)="searchQueryChanged($event.target.value)" (keyup.enter)="searchQueryChanged(queryInp.value)">&ndash;&gt;-->
+<!--&lt;!&ndash;        <mat-hint>Search in entire pdf</mat-hint>&ndash;&gt;-->
+<!--&lt;!&ndash;      </mat-form-field>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div *ngIf="!isLoaded && !error && progressData" id="progress">&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="bg">&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="bar" [style.width]="progressData.loaded / progressData.total * 100 + '%'"></div>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;      <span>{{ getInt(progressData.loaded / progressData.total * 100) }}%</span>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;  </mat-drawer>&ndash;&gt;-->
+
+
+<!--  <mat-drawer-content>-->
+
+<!--    <div class="pdf-container">-->
+<!--      <pdf-viewer id="pdfShow" [src]="pdfSrc"-->
+<!--                  [original-size]="false" (click)="okay($event)"-->
+<!--      ></pdf-viewer>-->
+<!--    </div>-->
+<!--&lt;!&ndash;    <pdf-viewer [src]="pdfSrc" [(page)]="page" [rotation]="rotation" [original-size]="originalSize" [show-all]="showAll"&ndash;&gt;-->
+<!--&lt;!&ndash;      [fit-to-page]="fitToPage" (after-load-complete)="afterLoadComplete($event)" [zoom]="zoom" [zoom-scale]="zoomScale"&ndash;&gt;-->
+<!--&lt;!&ndash;      [stick-to-page]="stickToPage" [render-text]="renderText" [external-link-target]="'blank'"&ndash;&gt;-->
+<!--&lt;!&ndash;      [autoresize]="autoresize" (error)="onError($event)" (on-progress)="onProgress($event)"&ndash;&gt;-->
+<!--&lt;!&ndash;      (page-rendered)="pageRendered($event)" (click)="okay()"></pdf-viewer>&ndash;&gt;-->
+<!--  </mat-drawer-content>-->
+<!--</mat-drawer-container>-->
