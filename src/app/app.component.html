@@ -1,40 +1,41 @@
+<!--<app-upload-convert></app-upload-convert>-->
 <!--<div cdkDrop>-->
 <!--  <div *ngFor="let item of items" cdkDrag>{{item}}</div>-->
 <!--</div>-->
 <!--<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">-->
 <!--  <div class="example-box" *ngFor="let movie of origin" cdkDrag>{{movie}}</div>-->
 <!--</div>-->
-<div>
+<!--<div>-->
 
 
-  <div class="row">
-      <div class="col-md-10" style="width: 80%; float: left;" id="pdfPage">
+<!--  <div class="row">-->
+<!--      <div class="col-md-10" style="width: 80%; float: left;" id="pdfPage">-->
 
-        <pdf-viewer id="pdfShow" #abc (pageChange)="okay($event)" [(page)]="page" [show-all]="false" [src]="pdfSrc" [render-text]="true" [original-size]='false'
-                    [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-                    (click)="okay($event)" style="display: block;"
-        >
+<!--        <pdf-viewer id="pdfShow" #abc (pageChange)="okay($event)" [(page)]="page" [show-all]="false" [src]="pdfSrc" [render-text]="true" [original-size]='false'-->
+<!--                    [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"-->
+<!--                    (click)="okay($event)" style="display: block;"-->
+<!--        >-->
 
-        </pdf-viewer>
+<!--        </pdf-viewer>-->
 
-    </div>
-    <div class="col-md-2" style="width: 20%; float: left;" id="here">
-<!--      <div-->
-<!--        cdkDropList-->
-<!--        class="field-list">-->
-<!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
+<!--    </div>-->
+<!--    <div class="col-md-2" style="width: 20%; float: left;" id="here">-->
+<!--&lt;!&ndash;      <div&ndash;&gt;-->
+<!--&lt;!&ndash;        cdkDropList&ndash;&gt;-->
+<!--&lt;!&ndash;        class="field-list">&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--      <div class="box" id="box{{i}}" *ngFor="let list of origin;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)">{{list.title}}-->
 <!--      </div>-->
-      <div class="box" id="box{{i}}" *ngFor="let list of origin;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)">{{list.title}}
-      </div>
 
-    </div>
-  </div>
-<!--  <button (click)="prev()">prev</button>-->
-<!---->
-<!--<button (click)="next()">Next</button>-->
-</div>
-<button (click)="onsubmit()">Submit</button>
-<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>
+<!--    </div>-->
+<!--  </div>-->
+<!--&lt;!&ndash;  <button (click)="prev()">prev</button>&ndash;&gt;-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--&lt;!&ndash;<button (click)="next()">Next</button>&ndash;&gt;-->
+<!--</div>-->
+<!--<button (click)="onsubmit()">Submit</button>-->
+<!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
 <!--&lt;!&ndash;<h2>PDF Viewer</h2>&ndash;&gt;-->
 
 <!--&lt;!&ndash;<mat-toolbar color="primary">&ndash;&gt;-->
@@ -235,3 +236,4 @@
 <!--&lt;!&ndash;      (page-rendered)="pageRendered($event)" (click)="okay()"></pdf-viewer>&ndash;&gt;-->
 <!--  </mat-drawer-content>-->
 <!--</mat-drawer-container>-->
+<router-outlet></router-outlet>

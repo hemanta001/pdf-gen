@@ -1,0 +1,4 @@
+<p>I am at pdf doenload</p>
+Secured Id:<input type="text" id="securedId">
+Bank Name:<input type="text" id="bankName">
+<button [disabled]="processing" (click)="downloadPdf()">{{processing?'Processing':'Submit'}}</button>
