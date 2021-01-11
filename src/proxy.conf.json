@@ -1,0 +1,10 @@
+{
+  "/documents": {
+    "target": "https://secureid.blob.core.windows.net",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/documents": ""
+    }
+  }
+}
