@@ -38,9 +38,15 @@
   "homepage": "https://github.com/VadimDez/ng2-pdf-viewer#readme",
   "dependencies": {
     "@types/pdfjs-dist": "^2.1.7",
+    "angular-resize-event": "^2.0.1",
     "html2canvas": "^1.0.0-rc.7",
+    "jquery": "^3.5.1",
+    "jquery-ui": "^1.12.1",
+    "jquery-ui-dist": "^1.12.1",
     "jspdf": "^2.2.0",
+    "ng2-pdfjs-viewer": "^5.0.7",
     "pdfjs-dist": "^2.5.207",
+    "save": "^2.4.0",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
@@ -54,7 +60,7 @@
     "@angular/core": "~9.0.0",
     "@angular/forms": "~9.0.0",
     "@angular/language-service": "~9.0.0",
-    "@angular/material": "^8.2.1",
+    "@angular/material": "^7.0.0-rc.1",
     "@angular/platform-browser": "~9.0.0",
     "@angular/platform-browser-dynamic": "~9.0.0",
     "@angular/router": "~9.0.0",
