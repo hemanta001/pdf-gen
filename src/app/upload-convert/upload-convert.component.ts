@@ -65,7 +65,7 @@ export class UploadConvertComponent implements OnInit {
     {title: 'fatherName', type: 'text'},
     {title: 'phoneNo', type: 'text'},
   ];
-processing=false;
+  processing = false;
   destination = [];
 
   error: any;
@@ -144,42 +144,61 @@ processing=false;
   next() {
     if (this.page < this.totalPages) {
       this.page = this.page + 1;
+      this.divAdd();
     }
+  }
+
+  divAdd() {
+    for (const pdfFieldElement of this.pdfFieldElements) {
+      if (pdfFieldElement.pageNum !== this.page) {
+        document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
+      }
+    }
+    for (const pdfFieldElement of this.pdfFieldElements) {
+      if (pdfFieldElement.pageNum === this.page) {
+        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+        const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+
+        const $element = $('<div/></div>');
+        // console.log(elementDragDiv);
+        $element[0].classList.add('page' + this.page);
+        $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
+        $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+        $element[0].style.border = "2px solid";
+        $element[0].style.width = "25%";
+
+        $element[0].textContent = pdfFieldElement.fieldName;
+
+
+        //
+        $('#pdfPage').append($element);
+        $element.draggable().bind('dragstop', (e) => {
+          console.log(e)
+        });
+      }
+    }
+
   }
 
   prev() {
     if (this.page > 1) {
       this.page = this.page - 1;
+      this.divAdd();
     }
   }
 
   drop(event, item, i) {
     const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
-    console.log(elementDragDiv.style.transform);
     let element = event.source.getRootElement();
     let boundingClientRect = element.getBoundingClientRect();
-    let parentPosition = this.getPosition(document.getElementById("pdfShow"));
     console.log(document.getElementById("pdfPage").offsetHeight)
     console.log(document.getElementById("pdfPage").scrollHeight)
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
-    console.log(scrollTop)
-    console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - document.getElementById("pdfPage").offsetHeight));
-    // let element = event.source.getRootElement();
-    // let boundingClientRect = element.getBoundingClientRect();
-    // console.log("-------------");
-    // console.log(boundingClientRect);
-    // const windowX = (document.getElementById('pdfPage')['offsetWidth']);
-    // const windowY = (document.getElementById('pdfPage')['offsetHeight']);
-    // const xcoordinate = boundingClientRect.x;
-    // const ycoordinate = (boundingClientRect.y - boundingClientRect.height);
-    // const heightCoordinate = boundingClientRect.height / windowY;
-    // const widthCoordinate = boundingClientRect.width / windowX;
-    //
-    // console.log(xcoordinate);
-    // console.log(ycoordinate);
     const $element = $('<div/></div>');
-    console.log(elementDragDiv)
+    console.log(elementDragDiv);
+    $element[0].classList.add('page' + this.page);
     $element[0].style.left = boundingClientRect.x + 'px';
     $element[0].style.top = boundingClientRect.y + scrollTop - document.getElementById("pdfPage").offsetHeight + 'px';
     $element[0].style.border = "2px solid";
@@ -191,13 +210,8 @@ processing=false;
     $('#pdfPage').append($element);
     $element.draggable().bind('dragstop', (e) => {
       console.log(e)
-      console.log("yessssssssssssssss");
     });
 
-    // console.log("---------------")
-    // console.log(event);
-    // console.log(item)
-    //
     elementDragDiv.style.transform = ''
     elementDragDiv.style['touch-action'] = "";
     elementDragDiv.style['-webkit-user-drag'] = "";
@@ -207,8 +221,6 @@ processing=false;
     console.log(elementDragDiv.getBoundingClientRect());
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-    console.log("-------------");
-    console.log(boundingClientRect);
     const xcoordinate = boundingClientRect.x / windowX;
     const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
     const heightCoordinate = boundingClientRect.height / windowY;
@@ -222,11 +234,10 @@ processing=false;
       "fieldName": item.title
     };
     this.pdfFieldElements.push(pdfFieldElement);
-    console.log('x: ' + (boundingClientRect.x / windowX), 'y: ' + (boundingClientRect.y / windowY));
   }
 
   onsubmit() {
-    this.processing=true;
+    this.processing = true;
     // const xhr = new XMLHttpRequest();
     // xhr.open('GET', './assets/abc.pdf', true);
     // xhr.responseType = 'blob';
@@ -255,7 +266,7 @@ processing=false;
     formdata.append('file', this.fileToUpload);
     formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
     this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val(), formdata).subscribe(data => {
-      this.processing=false;
+      this.processing = false;
       alert("file submitted successfully")
       location.reload();
       console.log("yesssssssssssssss");
