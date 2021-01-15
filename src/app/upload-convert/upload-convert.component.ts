@@ -157,11 +157,9 @@ export class UploadConvertComponent implements OnInit {
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
         const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-        const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
         const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
 
         const $element = $('<div/></div>');
-        // console.log(elementDragDiv);
         $element[0].classList.add('page' + this.page);
         $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
