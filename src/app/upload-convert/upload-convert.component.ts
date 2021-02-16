@@ -1,11 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {BaseEncodedData} from './encoded-data.model';
 import {UploadConvertService} from './upload-convert.service';
 import jsPDF from 'jspdf';
-import {PDFDocumentProxy, PDFProgressData, PDFSource} from "../pdf-viewer/pdf-viewer.module";
-import {PdfViewerComponent} from "../pdf-viewer/pdf-viewer.component";
+import {PDFDocumentProxy, PDFProgressData, PDFSource} from '../pdf-viewer/pdf-viewer.module';
+import {PdfViewerComponent} from '../pdf-viewer/pdf-viewer.component';
 
 declare var $: any;
 
@@ -19,6 +18,9 @@ declare var $: any;
 export class UploadConvertComponent implements OnInit {
   @ViewChild('abc', {static: false}) viewer: ElementRef;
   totalPages: number;
+  rtime: any;
+  timeout = false;
+  delta = 200;
   pdfSrc: string | PDFSource | ArrayBuffer = './assets/abc.pdf';
   @ViewChild('pdfPage') div: ElementRef;
   items = [
@@ -30,7 +32,7 @@ export class UploadConvertComponent implements OnInit {
     'Item 5',
     'Item 6',
     'Item 7',
-  ]
+  ];
   pdfFieldElements: any = [];
   // or pass options as object
   // pdfSrc: any = {
@@ -65,7 +67,7 @@ export class UploadConvertComponent implements OnInit {
     {title: 'fatherName', type: 'text'},
     {title: 'phoneNo', type: 'text'},
   ];
-processing=false;
+  processing = false;
   destination = [];
 
   error: any;
@@ -96,7 +98,6 @@ processing=false;
   corsString = 'https://cors-anywhere.herokuapp.com/';
   pdfSource: string;
   finalPdfSource: string;
-  baseEncodedDatas: Array<BaseEncodedData> = [];
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
     fileSource: new FormControl('', [Validators.required])
@@ -133,13 +134,22 @@ processing=false;
         formdata.append('file', blob);
 
         this.http.post('http://localhost:8080/secured/pdf/update/' + xcoordinate + '/' + ycoordinate + '/' + this.page, formdata).subscribe(data => {
-          console.log("yesssssssssssssss");
+          console.log('yesssssssssssssss');
         });
       }
     };
 
     xhr.send();
   }
+
+  // @HostListener('window:resize', ['$event'])
+  // onResize(event) {
+  //   event.preventDefault();
+  //   this.reload();
+  //   event.stopPropagation();
+  //   // event.stopImmediatePropagation();
+  // }
+
 
   next() {
     if (this.page < this.totalPages) {
@@ -156,15 +166,9 @@ processing=false;
   drop(event, item, i) {
     const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
-    console.log(elementDragDiv.style.transform);
     let element = event.source.getRootElement();
     let boundingClientRect = element.getBoundingClientRect();
-    let parentPosition = this.getPosition(document.getElementById("pdfShow"));
-    console.log(document.getElementById("pdfPage").offsetHeight)
-    console.log(document.getElementById("pdfPage").scrollHeight)
-    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
-    console.log(scrollTop)
-    console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - document.getElementById("pdfPage").offsetHeight));
+    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop'];
     // let element = event.source.getRootElement();
     // let boundingClientRect = element.getBoundingClientRect();
     // console.log("-------------");
@@ -179,54 +183,80 @@ processing=false;
     // console.log(xcoordinate);
     // console.log(ycoordinate);
     const $element = $('<div/></div>');
-    console.log(elementDragDiv)
+    $element[0].classList.add('page' + this.page);
+    $element[0].style.position = 'relative';
     $element[0].style.left = boundingClientRect.x + 'px';
-    $element[0].style.top = boundingClientRect.y + scrollTop - document.getElementById("pdfPage").offsetHeight + 'px';
-    $element[0].style.border = "2px solid";
-    $element[0].style.width = "25%";
+    $element[0].style.top = boundingClientRect.y + scrollTop - document.getElementById('pdfPage').offsetHeight + 'px';
+    $element[0].style.border = '2px solid';
+    $element[0].style.width = '25%';
 
     $element[0].textContent = item.title;
 
     //
     $('#pdfPage').append($element);
     $element.draggable().bind('dragstop', (e) => {
-      console.log(e)
-      console.log("yessssssssssssssss");
+      console.log(e);
+      console.log('yessssssssssssssss');
     });
 
     // console.log("---------------")
     // console.log(event);
     // console.log(item)
     //
-    elementDragDiv.style.transform = ''
-    elementDragDiv.style['touch-action'] = "";
-    elementDragDiv.style['-webkit-user-drag'] = "";
-    elementDragDiv.style['-webkit-tap-highlight-color'] = "";
-    elementDragDiv.style['user-select'] = "";
+    elementDragDiv.style.transform = '';
+    elementDragDiv.style['touch-action'] = '';
+    elementDragDiv.style['-webkit-user-drag'] = '';
+    elementDragDiv.style['-webkit-tap-highlight-color'] = '';
+    elementDragDiv.style['user-select'] = '';
 
-    console.log(elementDragDiv.getBoundingClientRect());
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-    console.log("-------------");
+    console.log('-------------');
     console.log(boundingClientRect);
     const xcoordinate = boundingClientRect.x / windowX;
-    const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
+    const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY;
     const heightCoordinate = boundingClientRect.height / windowY;
     const widthCoordinate = boundingClientRect.width / windowX;
     const pdfFieldElement = {
-      "xcoordinate": xcoordinate,
-      "ycoordinate": ycoordinate,
-      "height": heightCoordinate,
-      "width": widthCoordinate,
-      "pageNum": this.page,
-      "fieldName": item.title
+      'xcoordinate': xcoordinate,
+      'ycoordinate': ycoordinate,
+      'height': heightCoordinate,
+      'width': widthCoordinate,
+      'pageNum': this.page,
+      'fieldName': item.title
     };
     this.pdfFieldElements.push(pdfFieldElement);
     console.log('x: ' + (boundingClientRect.x / windowX), 'y: ' + (boundingClientRect.y / windowY));
   }
 
+  patchValues() {
+    for (const pdfFieldElement of this.pdfFieldElements) {
+      if (pdfFieldElement.pageNum === this.page) {
+        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+        console.log(windowX, windowY);
+        const $element = $('<div/></div>');
+        $element[0].classList.add('page' + this.page);
+        $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
+        $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById('pdfPage').offsetHeight + 'px';
+        $element[0].style.border = '2px solid';
+        $element[0].style.width = '25%';
+
+        $element[0].textContent = pdfFieldElement.fieldName;
+
+        $('#pdfPage').append($element);
+        $element.draggable().resizable();
+      }
+    }
+  }
+
+  // reload() {
+  //   this.patchValues();
+  // }
+
+
   onsubmit() {
-    this.processing=true;
+    this.processing = true;
     // const xhr = new XMLHttpRequest();
     // xhr.open('GET', './assets/abc.pdf', true);
     // xhr.responseType = 'blob';
@@ -253,13 +283,39 @@ processing=false;
     const formdata: FormData = new FormData();
 
     formdata.append('file', this.fileToUpload);
-    formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
+    formdata.append('pdfFieldElementsList', JSON.stringify(this.pdfFieldElements));
     this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val(), formdata).subscribe(data => {
-      this.processing=false;
-      alert("file submitted successfully")
+      this.processing = false;
+      alert('file submitted successfully');
       location.reload();
-      console.log("yesssssssssssssss");
+      console.log('yesssssssssssssss');
     });
+  }
+
+  reload() {
+
+    this.rtime = new Date();
+    if (this.timeout === false) {
+      this.timeout = true;
+      setTimeout(()=>{                           //<<<---using ()=> syntax
+        this.resizeend();
+      }, this.delta);
+      // setTimeout(this.resizeend, this.delta);
+    }
+  }
+
+  resizeend() {
+    $('.page' + this.page).remove();
+    const date:any = new Date();
+    if ((date - this.rtime) < this.delta) {
+      setTimeout(()=>{                           //<<<---using ()=> syntax
+        this.resizeend();
+      }, this.delta);
+    } else {
+      this.timeout = false;
+    }
+    this.patchValues();
+
   }
 
 
@@ -270,10 +326,10 @@ processing=false;
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
     let element = event.source.getRootElement();
     let boundingClientRect = element.getBoundingClientRect();
-    console.log("-------------");
+    console.log('-------------');
     console.log(boundingClientRect);
     const xcoordinate = boundingClientRect.x / windowX;
-    const ycoordinate = (boundingClientRect.y + boundingClientRect.height) / windowY
+    const ycoordinate = (boundingClientRect.y + boundingClientRect.height) / windowY;
     const heightCoordinate = boundingClientRect.height / windowY;
     const widthCoordinate = boundingClientRect.width / windowX;
 
@@ -295,7 +351,7 @@ processing=false;
         formdata.append('file', blob);
 
         this.http.post('http://localhost:8080/secured/pdf/update/' + xcoordinate + '/' + ycoordinate + '/' + widthCoordinate + '/' + heightCoordinate + '/' + this.page, formdata).subscribe(data => {
-          console.log("yesssssssssssssss");
+          console.log('yesssssssssssssss');
         });
       }
     };
@@ -304,8 +360,8 @@ processing=false;
   }
 
   getPosition(el) {
-    console.log("djsadjisajdisaij")
-    console.log(el)
+    console.log('djsadjisajdisaij');
+    console.log(el);
     let x = 0;
     let y = 0;
     while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
@@ -472,7 +528,7 @@ processing=false;
     // this.loadPdf(event, "./assets/abc.pdf");
     // let element = event.source.getRootElement();
     // let boundingClientRect = element.getBoundingClientRect();
-    console.log(event)
+    console.log(event);
 
   }
 

@@ -1,4 +1,4 @@
-<div id="formPdf">
+<div id="formPdf" hidden="hidden">
   <h1>Angular 9 Multiple Image Upload with Preview - ItSolutionStuff.com</h1>
 
   <form [formGroup]="myForm" (ngSubmit)="submit()">
@@ -18,7 +18,8 @@
       </div>
     </div>
 
-    <img *ngFor='let url of images;let i=index' id="img{{i}}" [src]="url" height="150" width="200px" style="margin: 3px;">
+    <img *ngFor='let url of images;let i=index' id="img{{i}}" [src]="url" height="150" width="200px"
+         style="margin: 3px;">
     <br/>
 
 
@@ -36,13 +37,16 @@
 <!--</div>-->
 <!--<div>-->
 
-<div id="pdfViewer" hidden="hidden">
-  <div class="row">
-    <div class="col-md-10" style="width: 80%; float: left;" id="pdfPage">
+<div id="pdfViewer"  >
+  <div class="row" style="position: relative">
+    <div class="col-md-10" style="width: 80%; float: left;position: relative" id="pdfPage" (resize)="patchValues()">
 
-      <pdf-viewer id="pdfShow" #abc  [(page)]="page" [show-all]="false" [src]="finalPdfSource" [render-text]="true" [original-size]='false'
+      <pdf-viewer id="pdfShow" (window:resize)="reload()"
+                  #abc [(page)]="page" [show-all]="false"
+                  src="https://cors-anywhere.herokuapp.com/https://secureid.blob.core.windows.net/documents/1610687986635.pdf"
+                  [render-text]="true" [original-size]='false'
                   [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-                   style="display: block;"
+                  style="position: relative"
       >
 
       </pdf-viewer>
@@ -54,7 +58,8 @@
       <!--        class="field-list">-->
       <!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
       <!--      </div>-->
-      <div class="box" id="box{{i}}" *ngFor="let list of origin;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)">{{list.title}}
+      <div class="box" id="box{{i}}" *ngFor="let list of origin;let i=index;" cdkDrag
+           (cdkDragEnded)="drop($event,list,i)">{{list.title}}
       </div>
 
     </div>
@@ -62,8 +67,8 @@
   <!--  <button (click)="prev()">prev</button>-->
   <!---->
   <!--<button (click)="next()">Next</button>-->
-Organization Name:<input type="text" required="required" id="orgName">
-<button (click)="onsubmit()" [disabled]="processing">{{processing?'Processing':'Submit'}}</button>
-<!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
+  Organization Name:<input type="text" required="required" id="orgName">
+  <button (click)="onsubmit()" [disabled]="processing">{{processing ? 'Processing' : 'Submit'}}</button>
+  <!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
 
 </div>

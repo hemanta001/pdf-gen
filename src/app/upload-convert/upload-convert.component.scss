@@ -1,0 +1,8 @@
+.fullw {
+  width: 80%;
+}
+@media (min-width: 640px) {
+  .fullw {
+    width: 100%;
+  }
+}
