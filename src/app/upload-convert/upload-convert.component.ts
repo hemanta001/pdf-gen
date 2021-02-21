@@ -152,6 +152,7 @@ export class UploadConvertComponent implements OnInit {
         document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
       }
     }
+    let i=0;
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
         const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
@@ -166,13 +167,17 @@ export class UploadConvertComponent implements OnInit {
 
         $element[0].textContent = pdfFieldElement.fieldName;
 
+        $element[0].setAttribute("index", i);
 
         //
         $('#pdfPage').append($element);
         $element.draggable().bind('dragstop', (e) => {
           console.log(e)
+          const index = e.target.getAttribute("index");
+          this.updateForm(e.target,index)
         });
       }
+      i++;
     }
 
   }
@@ -202,11 +207,6 @@ export class UploadConvertComponent implements OnInit {
 
     $element[0].textContent = item.title;
 
-    //
-    $('#pdfPage').append($element);
-    $element.draggable().bind('dragstop', (e) => {
-      console.log(e)
-    });
 
     elementDragDiv.style.transform = ''
     elementDragDiv.style['touch-action'] = "";
@@ -230,8 +230,39 @@ export class UploadConvertComponent implements OnInit {
       "fieldName": item.title
     };
     this.pdfFieldElements.push(pdfFieldElement);
+    $element[0].setAttribute("index", this.pdfFieldElements.length - 1);
+    $('#pdfPage').append($element);
+    $element.draggable().bind('dragstop', (e) => {
+      console.log(e)
+      const index = e.target.getAttribute("index");
+      this.updateForm(e.target,index)
+    });
   }
+updateForm(event,index){
+  // const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
+  // let element = event.source.getRootElement();
+  let boundingClientRect = event.getBoundingClientRect();
+  console.log(document.getElementById("pdfPage").offsetHeight)
+  console.log(document.getElementById("pdfPage").scrollHeight)
+  const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+
+  const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+  const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+  const xcoordinate = boundingClientRect.x / windowX;
+  const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
+  const heightCoordinate = boundingClientRect.height / windowY;
+  const widthCoordinate = boundingClientRect.width / windowX;
+  const pdfFieldElement = {
+    "xcoordinate": xcoordinate,
+    "ycoordinate": ycoordinate,
+    "height": heightCoordinate,
+    "width": widthCoordinate,
+    "pageNum": this.page,
+    "fieldName": event.innerText
+  };
+  this.pdfFieldElements[index]=pdfFieldElement
+}
   onsubmit() {
     this.processing = true;
     // const xhr = new XMLHttpRequest();
