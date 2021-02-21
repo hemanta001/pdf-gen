@@ -93,9 +93,7 @@ export class UploadConvertComponent implements OnInit {
   docFile = File;
   currentFileUpload: File;
   fileToUpload: any;
-  corsString = 'https://cors-anywhere.herokuapp.com/';
   pdfSource: string;
-  finalPdfSource: string;
   baseEncodedDatas: Array<BaseEncodedData> = [];
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
@@ -551,8 +549,6 @@ export class UploadConvertComponent implements OnInit {
           console.log(event);
           if (event instanceof HttpResponse) {
             this.pdfSource = (event.body as string);
-            this.finalPdfSource = this.corsString + this.pdfSource;
-            console.log(this.finalPdfSource);
 
             document.getElementById('formPdf').setAttribute('hidden', 'hidden');
 

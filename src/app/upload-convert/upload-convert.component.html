@@ -40,7 +40,7 @@
   <div class="row">
     <div class="col-md-10" style="width: 80%; float: left;" id="pdfPage">
 
-      <pdf-viewer id="pdfShow" #abc  [(page)]="page" [show-all]="false" [src]="finalPdfSource" [render-text]="true" [original-size]='false'
+      <pdf-viewer id="pdfShow" #abc  [(page)]="page" [show-all]="false" [src]="pdfSource" [render-text]="true" [original-size]='false'
                   [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
                    style="display: block;"
       >
