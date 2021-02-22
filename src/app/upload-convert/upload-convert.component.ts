@@ -153,29 +153,44 @@ export class UploadConvertComponent implements OnInit {
         document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
       }
     }
-    let i=0;
+    let i = 0;
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
         const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
         const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-
-        const $element = $('<div/></div>');
+        let opaqueSelected = `<option value="Opaque">Opaque</option>`;
+        let transparentSelected = `<option value="Transparent">Transparent</option>`;
+        if (pdfFieldElement.isTransparent) {
+          transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
+        } else {
+          opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
+        }
+        const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}' >${opaqueSelected}${transparentSelected}</select></div>`);
         $element[0].classList.add('page' + this.page);
         $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
         $element[0].style.border = "2px solid";
         $element[0].style.width = "25%";
 
-        $element[0].textContent = pdfFieldElement.fieldName;
+        // $element[0].textContent = pdfFieldElement.fieldName;
 
         $element[0].setAttribute("index", i);
 
         //
         $('#pdfPage').append($element);
         $element.draggable().bind('dragstop', (e) => {
-          console.log(e)
           const index = e.target.getAttribute("index");
-          this.updateForm(e.target,index)
+          this.updateForm(e.target, index)
+        });
+
+        $('select').on('change', (e) => {
+          const index = e.target.id.split('-')[1];
+          const value = e.target.value;
+          let isTransparent = 0;
+          if (value === 'Transparent') {
+            isTransparent = 1;
+          }
+          this.updateTransparency(index, isTransparent);
         });
       }
       i++;
@@ -190,6 +205,10 @@ export class UploadConvertComponent implements OnInit {
     }
   }
 
+  getVal(event) {
+    console.log(event)
+  }
+
   drop(event, item, i) {
     const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
@@ -198,15 +217,6 @@ export class UploadConvertComponent implements OnInit {
     console.log(document.getElementById("pdfPage").offsetHeight)
     console.log(document.getElementById("pdfPage").scrollHeight)
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
-    const $element = $('<div/></div>');
-    console.log(elementDragDiv);
-    $element[0].classList.add('page' + this.page);
-    $element[0].style.left = boundingClientRect.x + 'px';
-    $element[0].style.top = boundingClientRect.y + scrollTop - document.getElementById("pdfPage").offsetHeight + 'px';
-    $element[0].style.border = "2px solid";
-    $element[0].style.width = "25%";
-
-    $element[0].textContent = item.title;
 
 
     elementDragDiv.style.transform = ''
@@ -228,18 +238,45 @@ export class UploadConvertComponent implements OnInit {
       "height": heightCoordinate,
       "width": widthCoordinate,
       "pageNum": this.page,
-      "fieldName": item.title
+      "fieldName": item.title,
+      "isTransparent": 0
     };
     this.pdfFieldElements.push(pdfFieldElement);
+    const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
+      '  <option value="Opaque">Opaque</option>\n' +
+      '  <option value="Transparent">Transparent</option>\n' +
+      '</select></div>');
+    console.log(elementDragDiv);
+    $element[0].classList.add('page' + this.page);
+    $element[0].style.left = boundingClientRect.x + 'px';
+    $element[0].style.top = boundingClientRect.y + scrollTop - document.getElementById("pdfPage").offsetHeight + 'px';
+    $element[0].style.border = "2px solid";
+    $element[0].style.width = "25%";
+
+    // $element[0].textContent = item.title;
     $element[0].setAttribute("index", this.pdfFieldElements.length - 1);
+
     $('#pdfPage').append($element);
     $element.draggable().bind('dragstop', (e) => {
-      console.log(e)
       const index = e.target.getAttribute("index");
-      this.updateForm(e.target,index)
+      this.updateForm(e.target, index)
     });
+    $('select').on('change', (e) => {
+      const index = e.target.id.split('-')[1];
+      const value = e.target.value;
+      let isTransparent = 0;
+      if (value === 'Transparent') {
+        isTransparent = 1;
+      }
+      this.updateTransparency(index, isTransparent);
+    });
+  };
+
+  updateTransparency(index, isTransparent) {
+    this.pdfFieldElements[index]['isTransparent'] = isTransparent;
   }
-  updateForm(event,index){
+
+  updateForm(event, index) {
     // const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
     // let element = event.source.getRootElement();
@@ -262,8 +299,9 @@ export class UploadConvertComponent implements OnInit {
       "pageNum": this.page,
       "fieldName": event.innerText
     };
-    this.pdfFieldElements[index]=pdfFieldElement
+    this.pdfFieldElements[index] = pdfFieldElement
   }
+
   onsubmit() {
     this.processing = true;
     // const xhr = new XMLHttpRequest();
@@ -606,12 +644,13 @@ export class UploadConvertComponent implements OnInit {
   ngOnInit(): void {
     this.f;
   }
+
   reload() {
 
     this.rtime = new Date();
     if (this.timeout === false) {
       this.timeout = true;
-      setTimeout(()=>{                           //<<<---using ()=> syntax
+      setTimeout(() => {                           //<<<---using ()=> syntax
         this.resizeend();
       }, this.delta);
       // setTimeout(this.resizeend, this.delta);
@@ -620,9 +659,9 @@ export class UploadConvertComponent implements OnInit {
 
   resizeend() {
     $('.page' + this.page).remove();
-    const date:any = new Date();
+    const date: any = new Date();
     if ((date - this.rtime) < this.delta) {
-      setTimeout(()=>{                           //<<<---using ()=> syntax
+      setTimeout(() => {                           //<<<---using ()=> syntax
         this.resizeend();
       }, this.delta);
     } else {
@@ -631,6 +670,7 @@ export class UploadConvertComponent implements OnInit {
     this.patchValues();
 
   }
+
   patchValues() {
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
