@@ -1,7 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {BaseEncodedData} from './encoded-data.model';
 import {UploadConvertService} from './upload-convert.service';
 import jsPDF from 'jspdf';
 import {PDFDocumentProxy, PDFProgressData, PDFSource} from "../pdf-viewer/pdf-viewer.module";
@@ -30,7 +29,10 @@ export class UploadConvertComponent implements OnInit {
     'Item 5',
     'Item 6',
     'Item 7',
-  ]
+  ];
+  rtime: any;
+  timeout = false;
+  delta = 200;
   pdfFieldElements: any = [];
   // or pass options as object
   // pdfSrc: any = {
@@ -94,7 +96,6 @@ export class UploadConvertComponent implements OnInit {
   currentFileUpload: File;
   fileToUpload: any;
   pdfSource: string;
-  baseEncodedDatas: Array<BaseEncodedData> = [];
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
     fileSource: new FormControl('', [Validators.required])
@@ -238,31 +239,31 @@ export class UploadConvertComponent implements OnInit {
       this.updateForm(e.target,index)
     });
   }
-updateForm(event,index){
-  // const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
+  updateForm(event,index){
+    // const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
-  // let element = event.source.getRootElement();
-  let boundingClientRect = event.getBoundingClientRect();
-  console.log(document.getElementById("pdfPage").offsetHeight)
-  console.log(document.getElementById("pdfPage").scrollHeight)
-  const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+    // let element = event.source.getRootElement();
+    let boundingClientRect = event.getBoundingClientRect();
+    console.log(document.getElementById("pdfPage").offsetHeight)
+    console.log(document.getElementById("pdfPage").scrollHeight)
+    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
 
-  const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-  const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-  const xcoordinate = boundingClientRect.x / windowX;
-  const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
-  const heightCoordinate = boundingClientRect.height / windowY;
-  const widthCoordinate = boundingClientRect.width / windowX;
-  const pdfFieldElement = {
-    "xcoordinate": xcoordinate,
-    "ycoordinate": ycoordinate,
-    "height": heightCoordinate,
-    "width": widthCoordinate,
-    "pageNum": this.page,
-    "fieldName": event.innerText
-  };
-  this.pdfFieldElements[index]=pdfFieldElement
-}
+    const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+    const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+    const xcoordinate = boundingClientRect.x / windowX;
+    const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
+    const heightCoordinate = boundingClientRect.height / windowY;
+    const widthCoordinate = boundingClientRect.width / windowX;
+    const pdfFieldElement = {
+      "xcoordinate": xcoordinate,
+      "ycoordinate": ycoordinate,
+      "height": heightCoordinate,
+      "width": widthCoordinate,
+      "pageNum": this.page,
+      "fieldName": event.innerText
+    };
+    this.pdfFieldElements[index]=pdfFieldElement
+  }
   onsubmit() {
     this.processing = true;
     // const xhr = new XMLHttpRequest();
@@ -605,6 +606,50 @@ updateForm(event,index){
   ngOnInit(): void {
     this.f;
   }
+  reload() {
 
+    this.rtime = new Date();
+    if (this.timeout === false) {
+      this.timeout = true;
+      setTimeout(()=>{                           //<<<---using ()=> syntax
+        this.resizeend();
+      }, this.delta);
+      // setTimeout(this.resizeend, this.delta);
+    }
+  }
+
+  resizeend() {
+    $('.page' + this.page).remove();
+    const date:any = new Date();
+    if ((date - this.rtime) < this.delta) {
+      setTimeout(()=>{                           //<<<---using ()=> syntax
+        this.resizeend();
+      }, this.delta);
+    } else {
+      this.timeout = false;
+    }
+    this.patchValues();
+
+  }
+  patchValues() {
+    for (const pdfFieldElement of this.pdfFieldElements) {
+      if (pdfFieldElement.pageNum === this.page) {
+        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+        console.log(windowX, windowY);
+        const $element = $('<div/></div>');
+        $element[0].classList.add('page' + this.page);
+        $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
+        $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById('pdfPage').offsetHeight + 'px';
+        $element[0].style.border = '2px solid';
+        $element[0].style.width = '25%';
+
+        $element[0].textContent = pdfFieldElement.fieldName;
+
+        $('#pdfPage').append($element);
+        $element.draggable().resizable();
+      }
+    }
+  }
 
 }

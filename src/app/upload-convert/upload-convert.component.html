@@ -18,7 +18,8 @@
       </div>
     </div>
 
-    <img *ngFor='let url of images;let i=index' id="img{{i}}" [src]="url" height="150" width="200px" style="margin: 3px;">
+    <img *ngFor='let url of images;let i=index' id="img{{i}}" [src]="url" height="150" width="200px"
+         style="margin: 3px;">
     <br/>
 
 
@@ -37,12 +38,12 @@
 <!--<div>-->
 
 <div id="pdfViewer" hidden="hidden">
-  <div class="row">
-    <div class="col-md-10" style="width: 80%; float: left;" id="pdfPage">
+  <div class="row" style="position: relative">
+    <div class="col-md-10" style="width: 80%; float: left;position: relative" id="pdfPage" (resize)="patchValues()">
 
-      <pdf-viewer id="pdfShow" #abc  [(page)]="page" [show-all]="false" [src]="pdfSource" [render-text]="true" [original-size]='false'
+      <pdf-viewer id="pdfShow" #abc  [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource" [render-text]="true" [original-size]='false'
                   [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-                   style="display: block;"
+                   style="display: relative;"
       >
 
       </pdf-viewer>
