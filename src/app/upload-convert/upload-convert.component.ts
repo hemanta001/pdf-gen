@@ -160,7 +160,7 @@ export class UploadConvertComponent implements OnInit {
         const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
         let opaqueSelected = `<option value="Opaque">Opaque</option>`;
         let transparentSelected = `<option value="Transparent">Transparent</option>`;
-        if (pdfFieldElement.isTransparent) {
+        if (pdfFieldElement.transparent) {
           transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
         } else {
           opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
@@ -186,11 +186,11 @@ export class UploadConvertComponent implements OnInit {
         $('select').on('change', (e) => {
           const index = e.target.id.split('-')[1];
           const value = e.target.value;
-          let isTransparent = 0;
+          let transparent = false;
           if (value === 'Transparent') {
-            isTransparent = 1;
+            transparent = true;
           }
-          this.updateTransparency(index, isTransparent);
+          this.updateTransparency(index, transparent);
         });
       }
       i++;
@@ -239,7 +239,7 @@ export class UploadConvertComponent implements OnInit {
       "width": widthCoordinate,
       "pageNum": this.page,
       "fieldName": item.title,
-      "isTransparent": 0
+      "transparent": false
     };
     this.pdfFieldElements.push(pdfFieldElement);
     const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
@@ -264,16 +264,16 @@ export class UploadConvertComponent implements OnInit {
     $('select').on('change', (e) => {
       const index = e.target.id.split('-')[1];
       const value = e.target.value;
-      let isTransparent = 0;
+      let transparent = false;
       if (value === 'Transparent') {
-        isTransparent = 1;
+        transparent = true;
       }
-      this.updateTransparency(index, isTransparent);
+      this.updateTransparency(index, transparent);
     });
   };
 
-  updateTransparency(index, isTransparent) {
-    this.pdfFieldElements[index]['isTransparent'] = isTransparent;
+  updateTransparency(index, transparent) {
+    this.pdfFieldElements[index]['transparent'] = transparent;
   }
 
   updateForm(event, index) {
