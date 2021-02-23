@@ -170,7 +170,8 @@ export class UploadConvertComponent implements OnInit {
         $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
         $element[0].style.border = "2px solid";
-        $element[0].style.width = "25%";
+        $element[0].style.height = (pdfFieldElement.height*windowY) + 'px';
+        $element[0].style.width = (pdfFieldElement.width*windowX) + 'px';
 
         // $element[0].textContent = pdfFieldElement.fieldName;
 
@@ -178,6 +179,15 @@ export class UploadConvertComponent implements OnInit {
 
         //
         $('#pdfPage').append($element);
+        $element.resizable().bind('resizestop', (e)=> {
+          const index = e.target.getAttribute("index");
+          console.log("befor form update...")
+          console.log(this.pdfFieldElements[index])
+          this.updateForm(e.target,index)
+          console.log("after form update...")
+          console.log(this.pdfFieldElements[index])
+        });
+
         $element.draggable().bind('dragstop', (e) => {
           const index = e.target.getAttribute("index");
           this.updateForm(e.target, index)
@@ -260,6 +270,14 @@ export class UploadConvertComponent implements OnInit {
     $element.draggable().bind('dragstop', (e) => {
       const index = e.target.getAttribute("index");
       this.updateForm(e.target, index)
+    });
+    $element.resizable().bind('resizestop', (e)=> {
+      const index = e.target.getAttribute("index");
+      console.log("befor form update...")
+      console.log(this.pdfFieldElements[index])
+      this.updateForm(e.target,index)
+      console.log("after form update...")
+      console.log(this.pdfFieldElements[index])
     });
     $('select').on('change', (e) => {
       const index = e.target.id.split('-')[1];
@@ -681,8 +699,9 @@ export class UploadConvertComponent implements OnInit {
         $element[0].classList.add('page' + this.page);
         $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById('pdfPage').offsetHeight + 'px';
+        $element[0].style.height = pdfFieldElement.height * windowY + 'px'
+        $element[0].style.width =  pdfFieldElement.width * windowX + 'px'
         $element[0].style.border = '2px solid';
-        $element[0].style.width = '25%';
 
         $element[0].textContent = pdfFieldElement.fieldName;
 
