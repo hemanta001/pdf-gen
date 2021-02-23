@@ -315,9 +315,9 @@ export class UploadConvertComponent implements OnInit {
       "height": heightCoordinate,
       "width": widthCoordinate,
       "pageNum": this.page,
-      "fieldName": event.innerText
+      "fieldName": this.pdfFieldElements[index].fieldName
     };
-    this.pdfFieldElements[index] = pdfFieldElement
+    this.pdfFieldElements[index] = pdfFieldElement;
   }
 
   onsubmit() {
