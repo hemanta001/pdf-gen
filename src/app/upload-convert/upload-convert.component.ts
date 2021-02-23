@@ -155,7 +155,9 @@ export class UploadConvertComponent implements OnInit {
     }
     let i=0;
     for (const pdfFieldElement of this.pdfFieldElements) {
+
       if (pdfFieldElement.pageNum === this.page) {
+        console.log(pdfFieldElement)
         const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
         const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
 
@@ -164,14 +166,26 @@ export class UploadConvertComponent implements OnInit {
         $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
         $element[0].style.border = "2px solid";
-        $element[0].style.width = "25%";
-
+        // console.log("before height =>" + pdfFieldElement.height)
+        // console.log("before width =>" + pdfFieldElement.width)
+        $element[0].style.height = (pdfFieldElement.height*windowY) + 'px';
+        $element[0].style.width = (pdfFieldElement.width*windowX) + 'px';
+        //
         $element[0].textContent = pdfFieldElement.fieldName;
-
+        //
         $element[0].setAttribute("index", i);
 
         //
         $('#pdfPage').append($element);
+        $element.resizable().bind('resizestop', (e)=> {
+          const index = e.target.getAttribute("index");
+          console.log("befor form update...")
+          console.log(this.pdfFieldElements[index])
+          this.updateForm(e.target,index)
+          console.log("after form update...")
+          console.log(this.pdfFieldElements[index])
+        });
+
         $element.draggable().bind('dragstop', (e) => {
           console.log(e)
           const index = e.target.getAttribute("index");
@@ -205,6 +219,7 @@ export class UploadConvertComponent implements OnInit {
     $element[0].style.top = boundingClientRect.y + scrollTop - document.getElementById("pdfPage").offsetHeight + 'px';
     $element[0].style.border = "2px solid";
     $element[0].style.width = "25%";
+    $element[0].style["text-align"]='center'
 
     $element[0].textContent = item.title;
 
@@ -232,7 +247,29 @@ export class UploadConvertComponent implements OnInit {
     };
     this.pdfFieldElements.push(pdfFieldElement);
     $element[0].setAttribute("index", this.pdfFieldElements.length - 1);
+
     $('#pdfPage').append($element);
+
+
+    // $element.resizable({
+    //   onDragStart: function (e, $el, opt) {
+    //     console.log("drag start...")
+    //     $el.css("cursor", "nwse-resize");
+    //   },
+    //   onDragEnd: function (e, $el, opt) {
+    //     console.log("drag end...")
+    //     $el.css("cursor", "");
+    //   }
+    // });
+
+    $element.resizable().bind('resizestop', (e)=> {
+      const index = e.target.getAttribute("index");
+      console.log("befor form update...")
+      console.log(this.pdfFieldElements[index])
+      this.updateForm(e.target,index)
+      console.log("after form update...")
+      console.log(this.pdfFieldElements[index])
+    });
     $element.draggable().bind('dragstop', (e) => {
       console.log(e)
       const index = e.target.getAttribute("index");
@@ -641,8 +678,9 @@ export class UploadConvertComponent implements OnInit {
         $element[0].classList.add('page' + this.page);
         $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById('pdfPage').offsetHeight + 'px';
+        $element[0].style.height = pdfFieldElement.height * windowY + 'px'
+        $element[0].style.width =  pdfFieldElement.width * windowX + 'px'
         $element[0].style.border = '2px solid';
-        $element[0].style.width = '25%';
 
         $element[0].textContent = pdfFieldElement.fieldName;
 
