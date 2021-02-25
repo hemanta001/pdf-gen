@@ -43,7 +43,7 @@ export class UploadConvertComponent implements OnInit {
   //// }
   // };
   name = 'Angular';
-  origin = [
+  fields = [
     {title: 'fullName', type: 'text'},
     {title: 'permanentAddress', type: 'text'},
     {title: 'permanentProvince', type: 'text'},
