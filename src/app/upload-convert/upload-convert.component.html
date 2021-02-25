@@ -55,7 +55,7 @@
       <!--        class="field-list">-->
       <!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
       <!--      </div>-->
-      <div class="box" id="box{{i}}" *ngFor="let list of origin;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)">{{list.title}}
+      <div class="box" id="box{{i}}" *ngFor="let list of fields;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)" [cdkDragFreeDragPosition]="dragPosition" (cdkDragStarted)="resetDragPosition($event)">{{list.title}}
       </div>
 
     </div>
