@@ -42,6 +42,7 @@ export class UploadConvertComponent implements OnInit {
   ////   'Access-Control-Allow-Credentials': true
   //// }
   // };
+  dragPosition = {x: 0, y: 0};
   name = 'Angular';
   fields = [
     {title: 'fullName', type: 'text'},
@@ -218,7 +219,9 @@ export class UploadConvertComponent implements OnInit {
   getVal(event) {
     console.log(event)
   }
-
+  resetDragPosition($event){
+    this.dragPosition = {x: 0, y: 0};
+  }
   drop(event, item, i) {
     const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
@@ -229,7 +232,7 @@ export class UploadConvertComponent implements OnInit {
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
 
 
-    elementDragDiv.style.transform = ''
+    elementDragDiv.style.transform = 'translate3d(0,0,0)';
     elementDragDiv.style['touch-action'] = "";
     elementDragDiv.style['-webkit-user-drag'] = "";
     elementDragDiv.style['-webkit-tap-highlight-color'] = "";
