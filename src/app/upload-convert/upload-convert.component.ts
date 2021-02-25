@@ -149,59 +149,86 @@ export class UploadConvertComponent implements OnInit {
 
   divAdd() {
     for (const pdfFieldElement of this.pdfFieldElements) {
+      console.log(this.pdfFieldElements)
       if (pdfFieldElement.pageNum !== this.page) {
-        document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
+        if (!('isDeleted' in pdfFieldElement)) {
+          document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
+        }
       }
     }
     let i = 0;
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
-        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-        let opaqueSelected = `<option value="Opaque">Opaque</option>`;
-        let transparentSelected = `<option value="Transparent">Transparent</option>`;
-        if (pdfFieldElement.transparent) {
-          transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
-        } else {
-          opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
-        }
-        const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}' >${opaqueSelected}${transparentSelected}</select></div>`);
-        $element[0].classList.add('page' + this.page);
-        $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
-        $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
-        $element[0].style.border = "2px solid";
-        $element[0].style.height = (pdfFieldElement.height*windowY) + 'px';
-        $element[0].style.width = (pdfFieldElement.width*windowX) + 'px';
-
-        // $element[0].textContent = pdfFieldElement.fieldName;
-
-        $element[0].setAttribute("index", i);
-
-        //
-        $('#pdfPage').append($element);
-        $element.resizable().bind('resizestop', (e)=> {
-          const index = e.target.getAttribute("index");
-          console.log("befor form update...")
-          console.log(this.pdfFieldElements[index])
-          this.updateForm(e.target,index)
-          console.log("after form update...")
-          console.log(this.pdfFieldElements[index])
-        });
-
-        $element.draggable().bind('dragstop', (e) => {
-          const index = e.target.getAttribute("index");
-          this.updateForm(e.target, index)
-        });
-
-        $('select').on('change', (e) => {
-          const index = e.target.id.split('-')[1];
-          const value = e.target.value;
-          let transparent = false;
-          if (value === 'Transparent') {
-            transparent = true;
+        if (!('isDeleted' in pdfFieldElement)) {
+          const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+          const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+          let opaqueSelected = `<option value="Opaque">Opaque</option>`;
+          let transparentSelected = `<option value="Transparent">Transparent</option>`;
+          if (pdfFieldElement.transparent) {
+            transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
+          } else {
+            opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
           }
-          this.updateTransparency(index, transparent);
-        });
+          // const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
+          //   '  <option value="Opaque">Opaque</option>\n' +
+          //   '  <option value="Transparent">Transparent</option>\n' +
+          //   '</select>\n' +
+          //   `<button class="close-btn" id='close-${this.pdfFieldElements.length - 1}' aria-label="Close">\n` +
+          //   '  <span aria-hidden="true">&times;</span>\n' +
+          //   '</button></div>'
+          const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}'>\n` +
+            ' ${opaqueSelected}${transparentSelected}</select>\n' +
+            `<button class="close-btn" aria-label="Close">` +
+            '<span aria-hidden="true">&times;</span>' +
+            '</button></div>');
+
+
+          $element[0].classList.add('drag-and-resize-div');
+          $element[0].classList.add('page' + this.page);
+          $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
+          $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+          $element[0].style.border = "2px solid";
+          $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
+          $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
+
+          // $element[0].textContent = pdfFieldElement.fieldName;
+
+          $element[0].setAttribute("index", i);
+
+          //
+          $('#pdfPage').append($element);
+
+          $('.close-btn').on('click', (e) => {
+            console.log("divAdd wala")
+            let index = e.target.closest(".drag-and-resize-div").getAttribute("index");
+            this.pdfFieldElements[index]['isDeleted'] = true;
+            $element.remove();
+          })
+          $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
+            const index = e.target.getAttribute("index");
+            console.log("befor form update...")
+            console.log(this.pdfFieldElements[index])
+            this.updateForm(e.target, index)
+            console.log("after form update...")
+            console.log(this.pdfFieldElements[index])
+          });
+
+          $element.draggable().bind('dragstop', (e) => {
+            const index = e.target.getAttribute("index");
+            this.updateForm(e.target, index)
+          });
+
+          $('select').on('change', (e) => {
+            const index = e.target.id.split('-')[1];
+            const value = e.target.value;
+            let transparent = false;
+            if (value === 'Transparent') {
+              transparent = true;
+            }
+            this.updateTransparency(index, transparent);
+          });
+        }
+
       }
       i++;
     }
@@ -247,6 +274,7 @@ export class UploadConvertComponent implements OnInit {
       "ycoordinate": ycoordinate,
       "height": heightCoordinate,
       "width": widthCoordinate,
+      "isDeleted": false,
       "pageNum": this.page,
       "fieldName": item.title,
       "transparent": false
@@ -255,8 +283,14 @@ export class UploadConvertComponent implements OnInit {
     const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
       '  <option value="Opaque">Opaque</option>\n' +
       '  <option value="Transparent">Transparent</option>\n' +
-      '</select></div>');
-    console.log(elementDragDiv);
+      '</select>\n' +
+      `<button class="close-btn" aria-label="Close">\n` +
+      '  <span aria-hidden="true">&times;</span>\n' +
+      '</button></div>'
+    );
+
+
+    $element[0].classList.add('drag-and-resize-div');
     $element[0].classList.add('page' + this.page);
     $element[0].style.left = boundingClientRect.x + 'px';
     $element[0].style.top = boundingClientRect.y + scrollTop - document.getElementById("pdfPage").offsetHeight + 'px';
@@ -267,15 +301,28 @@ export class UploadConvertComponent implements OnInit {
     $element[0].setAttribute("index", this.pdfFieldElements.length - 1);
 
     $('#pdfPage').append($element);
+    let closeButton = document.getElementsByClassName("close");
+
+    $('.close-btn').on('click', (e) => {
+      console.log("drop wala")
+      let divToRemove = e.target.closest(".drag-and-resize-div");
+      this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
+      divToRemove.style.visibility="hidden";
+      // divToRemove.setAttribute("visibility","hidden");
+    })
+
+    //   console.log(this.getAttribute("index"));
+    // });
+
     $element.draggable().bind('dragstop', (e) => {
       const index = e.target.getAttribute("index");
       this.updateForm(e.target, index)
     });
-    $element.resizable().bind('resizestop', (e)=> {
+    $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
       const index = e.target.getAttribute("index");
       console.log("befor form update...")
       console.log(this.pdfFieldElements[index])
-      this.updateForm(e.target,index)
+      this.updateForm(e.target, index)
       console.log("after form update...")
       console.log(this.pdfFieldElements[index])
     });
@@ -348,13 +395,20 @@ export class UploadConvertComponent implements OnInit {
     const formdata: FormData = new FormData();
 
     formdata.append('file', this.fileToUpload);
-    formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
-    this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val(), formdata).subscribe(data => {
-      this.processing = false;
-      alert("file submitted successfully")
-      location.reload();
-      console.log("yesssssssssssssss");
-    });
+    this.pdfFieldElements = this.pdfFieldElements.filter(function (pdfElem) {
+      if (!('isDeleted' in pdfElem)) {
+        return pdfElem;
+      }
+    })
+    console.log(this.pdfFieldElements)
+
+    // formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
+    // this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val(), formdata).subscribe(data => {
+    //   this.processing = false;
+    //   alert("file submitted successfully")
+    //   location.reload();
+    //   console.log("yesssssssssssssss");
+    // });
   }
 
 
@@ -700,13 +754,13 @@ export class UploadConvertComponent implements OnInit {
         $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById('pdfPage').offsetHeight + 'px';
         $element[0].style.height = pdfFieldElement.height * windowY + 'px'
-        $element[0].style.width =  pdfFieldElement.width * windowX + 'px'
+        $element[0].style.width = pdfFieldElement.width * windowX + 'px'
         $element[0].style.border = '2px solid';
 
         $element[0].textContent = pdfFieldElement.fieldName;
 
         $('#pdfPage').append($element);
-        $element.draggable().resizable();
+        $element.draggable().resizable({handles: 'all'});
       }
     }
   }
