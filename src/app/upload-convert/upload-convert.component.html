@@ -40,7 +40,7 @@
 <div id="pdfViewer" hidden="hidden">
   <div class="row" style="position: relative">
     <div class="col-md-10" >
-<div id="pdfPage" (resize)="patchValues()">
+    <div id="pdfPage" (resize)="patchValues()">
       <pdf-viewer id="pdfShow" #abc  [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource" [render-text]="true" [original-size]='false'
                   [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
       >
@@ -48,7 +48,7 @@
       </pdf-viewer>
 </div>
     </div>
-    <div class="col-md-2" style="width: 20%; float: left;" id="here">
+    <div class="col-md-2" id="here">
       <!--      <div-->
       <!--        cdkDropList-->
       <!--        class="field-list">-->
