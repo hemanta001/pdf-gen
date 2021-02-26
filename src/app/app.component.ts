@@ -1,16 +1,11 @@
 /**
  * Created by vadimdez on 21/06/16.
  */
-import {Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
-import {
-  PDFProgressData,
-  PDFDocumentProxy,
-  PDFSource
-} from './pdf-viewer/pdf-viewer.module';
+import {Component, ElementRef, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {PDFDocumentProxy, PDFProgressData, PDFSource} from './pdf-viewer/pdf-viewer.module';
 
 import {PdfViewerComponent} from './pdf-viewer/pdf-viewer.component';
 import {HttpClient} from "@angular/common/http";
-import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 declare var $: any;
 
@@ -21,6 +16,8 @@ declare var $: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+
   @ViewChild('abc', {static: false}) viewer: ElementRef;
   totalPages: number;
   pdfSrc: string | PDFSource | ArrayBuffer = './assets/abc.pdf';

@@ -44,30 +44,7 @@ export class UploadConvertComponent implements OnInit {
   // };
   dragPosition = {x: 0, y: 0};
   name = 'Angular';
-  fields = [
-    {title: 'fullName', type: 'text'},
-    {title: 'permanentAddress', type: 'text'},
-    {title: 'permanentProvince', type: 'text'},
-    {title: 'permanentCity', type: 'text'},
-    {title: 'permanentCountry', type: 'text'},
-    {title: 'permanentVdcOrMunicipality', type: 'text'},
-    {title: 'permanentDistrict', type: 'text'},
-    {title: 'permanentWardNo', type: 'text'},
-    {title: 'temporaryAddress', type: 'text'},
-    {title: 'temporaryProvince', type: 'text'},
-    {title: 'temporaryCity', type: 'text'},
-    {title: 'temporaryCountry', type: 'text'},
-    {title: 'temporaryVdcOrMunicipality', type: 'text'},
-    {title: 'temporaryDistrict', type: 'text'},
-    {title: 'temporaryWardNo', type: 'text'},
-    {title: 'nationality', type: 'text'},
-    {title: 'citizenshipCertificateNo', type: 'text'},
-    {title: 'dateOfBirth', type: 'text'},
-    {title: 'sex', type: 'text'},
-    {title: 'bloodGroup', type: 'text'},
-    {title: 'fatherName', type: 'text'},
-    {title: 'phoneNo', type: 'text'},
-  ];
+  fields: {title: string, type: string}[];
   processing = false;
   destination = [];
 
@@ -718,6 +695,11 @@ export class UploadConvertComponent implements OnInit {
 
   ngOnInit(): void {
     this.f;
+    this.http.get<{ title: string, type: string }[]>("http://localhost:8080/getProperties?documentType=IdCard")
+      .subscribe(data => {
+          this.fields = data;
+        }
+      );
   }
 
   reload() {

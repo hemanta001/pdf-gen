@@ -1,0 +1,22 @@
+<div class="container mt-4 pt-2 pl-2">
+  <h3>Fill the form below.</h3>
+  <hr/>
+  <form [formGroup]="userInfoForm" (ngSubmit)="submitUserInfo()">
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input formControlName="fullName" type="text" class="form-control" id="fullName">
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="phoneNo">Phone Number</label>
+          <input formControlName="phoneNo" type="text" class="form-control" id="phoneNo">
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-success mb-4" type="submit">Submit</button>
+  </form>
+</div>
+
