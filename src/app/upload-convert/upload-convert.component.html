@@ -63,7 +63,12 @@
     <button (click)="prev()">prev</button>
 
   <button (click)="next()">Next</button>
-Organization Name:<input type="text" required="required" id="orgName">
+<!--Organization Name:<input type="text" required="required" id="orgName">-->
+  Organization Name:<select required="required" id="organization">
+  <option *ngFor="let organization of organizations" value="{{organization['id']}}">
+    {{organization['name']}}
+  </option>
+</select>
 <button (click)="onsubmit()" [disabled]="processing">{{processing?'Processing':'Submit'}}</button>
 <!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
 

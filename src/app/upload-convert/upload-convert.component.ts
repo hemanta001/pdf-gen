@@ -45,6 +45,7 @@ export class UploadConvertComponent implements OnInit {
   dragPosition = {x: 0, y: 0};
   name = 'Angular';
   fields: {title: string, type: string}[];
+  organizations: {id: number, name: string}[];
   processing = false;
   destination = [];
 
@@ -383,7 +384,7 @@ export class UploadConvertComponent implements OnInit {
     console.log(this.pdfFieldElements)
 
     formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
-    this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val(), formdata).subscribe(data => {
+    this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#organization').val(), formdata).subscribe(data => {
       this.processing = false;
       alert("file submitted successfully")
       location.reload();
@@ -698,6 +699,14 @@ export class UploadConvertComponent implements OnInit {
     this.http.get<{ title: string, type: string }[]>("http://localhost:8080/getProperties?documentType=IdCard")
       .subscribe(data => {
           this.fields = data;
+        }
+      );
+
+    this.http.get<{ id: number, name: string }[]>("http://localhost:8080/getOrganizations")
+      .subscribe(data => {
+        console.log(data)
+          this.organizations = data;
+        console.log(this.organizations)
         }
       );
   }
