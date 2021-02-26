@@ -39,15 +39,14 @@
 
 <div id="pdfViewer" hidden="hidden">
   <div class="row" style="position: relative">
-    <div class="col-md-10" style="width: 80%; float: left;position: relative" id="pdfPage" (resize)="patchValues()">
-
+    <div class="col-md-10" >
+<div id="pdfPage" (resize)="patchValues()">
       <pdf-viewer id="pdfShow" #abc  [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource" [render-text]="true" [original-size]='false'
                   [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-                   style="display: relative;"
       >
 
       </pdf-viewer>
-
+</div>
     </div>
     <div class="col-md-2" style="width: 20%; float: left;" id="here">
       <!--      <div-->
@@ -55,16 +54,18 @@
       <!--        class="field-list">-->
       <!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
       <!--      </div>-->
-      <div class="box" id="box{{i}}" *ngFor="let list of fields;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)" [cdkDragFreeDragPosition]="dragPosition" (cdkDragStarted)="resetDragPosition($event)">{{list.title}}
+      <div id="box{{i}}" *ngFor="let list of fields;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)" [cdkDragFreeDragPosition]="dragPosition" (cdkDragStarted)="resetDragPosition($event)">{{list.title}}
       </div>
+      <br>
+      <button (click)="prev()">prev</button>
 
+      <button (click)="next()">Next</button>
+      Organization Name:<input type="text" required="required" id="orgName">
+      <button (click)="onsubmit()" [disabled]="processing">{{processing?'Processing':'Submit'}}</button>
     </div>
-  </div>
-    <button (click)="prev()">prev</button>
 
-  <button (click)="next()">Next</button>
-Organization Name:<input type="text" required="required" id="orgName">
-<button (click)="onsubmit()" [disabled]="processing">{{processing?'Processing':'Submit'}}</button>
+  </div>
+
 <!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
 
 </div>
