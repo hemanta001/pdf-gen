@@ -9,12 +9,13 @@ import {AppComponent} from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import {AngularResizedEventModule} from "angular-resize-event";
-import { UploadConvertComponent } from './upload-convert/upload-convert.component';
+import {UploadConvertComponent} from './upload-convert/upload-convert.component';
 import {PdfDownloadComponent} from "./pdfDownload/pdf-download.component";
 import {RouterModule} from "@angular/router";
+import {AddUserInfoComponent} from './add-user-info/add-user-info.component';
 
 @NgModule({
-  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent],
+  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -24,11 +25,16 @@ import {RouterModule} from "@angular/router";
     NoopAnimationsModule,
     RouterModule.forRoot([{
       path: '',
-      component: UploadConvertComponent},
+      component: UploadConvertComponent
+    },
       {
-      path: 'pdf-download',
-      component: PdfDownloadComponent
-    }]),
+        path: 'pdf-download',
+        component: PdfDownloadComponent
+      },
+      {
+        path: 'add-info',
+        component: AddUserInfoComponent
+      }]),
 
     DemoMaterialModule,
     AngularResizedEventModule,
