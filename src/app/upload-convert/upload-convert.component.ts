@@ -44,7 +44,7 @@ export class UploadConvertComponent implements OnInit {
   // };
   dragPosition = {x: 0, y: 0};
   name = 'Angular';
-  fields: {title: string, type: string}[];
+  fields: { title: string, type: string }[];
   processing = false;
   destination = [];
 
@@ -129,82 +129,82 @@ export class UploadConvertComponent implements OnInit {
     for (const pdfFieldElement of this.pdfFieldElements) {
       console.log(this.pdfFieldElements)
       if (pdfFieldElement.pageNum !== this.page) {
-          document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
+        document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
       }
     }
     let i = 0;
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
-          const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-          const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-          let opaqueSelected = `<option value="Opaque">Opaque</option>`;
-          let transparentSelected = `<option value="Transparent">Transparent</option>`;
-          if (pdfFieldElement.transparent) {
-            transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
-          } else {
-            opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
-          }
-          // const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
-          //   '  <option value="Opaque">Opaque</option>\n' +
-          //   '  <option value="Transparent">Transparent</option>\n' +
-          //   '</select>\n' +
-          //   `<button class="close-btn" id='close-${this.pdfFieldElements.length - 1}' aria-label="Close">\n` +
-          //   '  <span aria-hidden="true">&times;</span>\n' +
-          //   '</button></div>'
-          const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}'>
+        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+        let opaqueSelected = `<option value="Opaque">Opaque</option>`;
+        let transparentSelected = `<option value="Transparent">Transparent</option>`;
+        if (pdfFieldElement.transparent) {
+          transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
+        } else {
+          opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
+        }
+        // const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
+        //   '  <option value="Opaque">Opaque</option>\n' +
+        //   '  <option value="Transparent">Transparent</option>\n' +
+        //   '</select>\n' +
+        //   `<button class="close-btn" id='close-${this.pdfFieldElements.length - 1}' aria-label="Close">\n` +
+        //   '  <span aria-hidden="true">&times;</span>\n' +
+        //   '</button></div>'
+        const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}'>
             ${opaqueSelected}${transparentSelected}</select>
             <button class="close-btn" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button></div>`);
 
 
-          $element[0].classList.add('drag-and-resize-div');
-          $element[0].classList.add('page' + this.page);
-          $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
-          $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
-          $element[0].style.border = "2px solid";
-          $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
-          $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
-          if(this.pdfFieldElements[i]['isDeleted']){
-            $element[0].style.visibility = 'hidden';
+        $element[0].classList.add('drag-and-resize-div');
+        $element[0].classList.add('page' + this.page);
+        $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
+        $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+        $element[0].style.border = "2px solid";
+        $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
+        $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
+        if (this.pdfFieldElements[i]['isDeleted']) {
+          $element[0].style.visibility = 'hidden';
 
+        }
+
+        // $element[0].textContent = pdfFieldElement.fieldName;
+
+        $element[0].setAttribute("index", i);
+
+        //
+        $('#pdfPage').append($element);
+
+        $('.close-btn').on('click', (e) => {
+          let divToRemove = e.target.closest(".drag-and-resize-div");
+          this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
+          divToRemove.style.visibility = "hidden";
+        })
+        $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
+          const index = e.target.getAttribute("index");
+          console.log("befor form update...")
+          console.log(this.pdfFieldElements[index])
+          this.updateForm(e.target, index)
+          console.log("after form update...")
+          console.log(this.pdfFieldElements[index])
+        });
+
+        $element.draggable().bind('dragstop', (e) => {
+          const index = e.target.getAttribute("index");
+          this.updateForm(e.target, index)
+        });
+
+        $('select').on('change', (e) => {
+          const index = e.target.id.split('-')[1];
+          const value = e.target.value;
+          let transparent = false;
+          if (value === 'Transparent') {
+            transparent = true;
           }
-
-          // $element[0].textContent = pdfFieldElement.fieldName;
-
-          $element[0].setAttribute("index", i);
-
-          //
-          $('#pdfPage').append($element);
-
-          $('.close-btn').on('click', (e) => {
-            let divToRemove = e.target.closest(".drag-and-resize-div");
-            this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-            divToRemove.style.visibility="hidden";
-          })
-          $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
-            const index = e.target.getAttribute("index");
-            console.log("befor form update...")
-            console.log(this.pdfFieldElements[index])
-            this.updateForm(e.target, index)
-            console.log("after form update...")
-            console.log(this.pdfFieldElements[index])
-          });
-
-          $element.draggable().bind('dragstop', (e) => {
-            const index = e.target.getAttribute("index");
-            this.updateForm(e.target, index)
-          });
-
-          $('select').on('change', (e) => {
-            const index = e.target.id.split('-')[1];
-            const value = e.target.value;
-            let transparent = false;
-            if (value === 'Transparent') {
-              transparent = true;
-            }
-            this.updateTransparency(index, transparent);
-          });
+          this.updateTransparency(index, transparent);
+        });
 
       }
       i++;
@@ -222,16 +222,31 @@ export class UploadConvertComponent implements OnInit {
   getVal(event) {
     console.log(event)
   }
-  resetDragPosition($event){
+
+  resetDragPosition($event) {
     this.dragPosition = {x: 0, y: 0};
   }
+
+  checkIfDropExistsInPdfView(boundingClientRect: any) {
+    if (
+      boundingClientRect.top >= 0 &&
+      boundingClientRect.left >= 0 &&
+      boundingClientRect.right <= (document.getElementById('pdfPage').clientWidth) &&
+      boundingClientRect.bottom <= (document.getElementById('pdfPage').clientHeight)
+    ) {
+      console.log('----In the pdf View!-----proceed for drop----');
+      return true;
+    } else {
+      console.log('----out of the pdf View!-----abort drop----');
+      return false;
+    }
+  }
+
   drop(event, item, i) {
     const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
     let element = event.source.getRootElement();
     let boundingClientRect = element.getBoundingClientRect();
-    console.log(document.getElementById("pdfPage").offsetHeight)
-    console.log(document.getElementById("pdfPage").scrollHeight)
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
 
 
@@ -240,8 +255,9 @@ export class UploadConvertComponent implements OnInit {
     elementDragDiv.style['-webkit-user-drag'] = "";
     elementDragDiv.style['-webkit-tap-highlight-color'] = "";
     elementDragDiv.style['user-select'] = "";
-
-    console.log(elementDragDiv.getBoundingClientRect());
+    if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
+      return;
+    }
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
     const xcoordinate = boundingClientRect.x / windowX;
@@ -287,7 +303,7 @@ export class UploadConvertComponent implements OnInit {
       console.log("drop wala")
       let divToRemove = e.target.closest(".drag-and-resize-div");
       this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-      divToRemove.style.visibility="hidden";
+      divToRemove.style.visibility = "hidden";
       // divToRemove.setAttribute("visibility","hidden");
     })
 
@@ -762,7 +778,7 @@ export class UploadConvertComponent implements OnInit {
         $element[0].style.border = "2px solid";
         $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
         $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
-        if(this.pdfFieldElements[i]['isDeleted']){
+        if (this.pdfFieldElements[i]['isDeleted']) {
           $element[0].style.visibility = 'hidden';
 
         }
@@ -777,7 +793,7 @@ export class UploadConvertComponent implements OnInit {
         $('.close-btn').on('click', (e) => {
           let divToRemove = e.target.closest(".drag-and-resize-div");
           this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-          divToRemove.style.visibility="hidden";
+          divToRemove.style.visibility = "hidden";
         })
         $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
           const index = e.target.getAttribute("index");
