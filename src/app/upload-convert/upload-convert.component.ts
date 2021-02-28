@@ -342,12 +342,24 @@ export class UploadConvertComponent implements OnInit {
 
     // let element = event.source.getRootElement();
     let boundingClientRect = event.getBoundingClientRect();
-    console.log(document.getElementById("pdfPage").offsetHeight)
-    console.log(document.getElementById("pdfPage").scrollHeight)
-    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
-
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+    if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
+
+      const pdfFieldElementCopy=this.pdfFieldElements[index];
+      event.style.left = (pdfFieldElementCopy.xcoordinate * windowX) + 'px';
+      event.style.top = ((pdfFieldElementCopy.ycoordinate - pdfFieldElementCopy.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+      event.style.border = "2px solid";
+      event.style.height = (pdfFieldElementCopy.height * windowY) + 'px';
+      event.style.width = (pdfFieldElementCopy.width * windowX) + 'px';
+      console.log(event);
+      return;
+    }
+    console.log(document.getElementById("pdfPage").offsetHeight)
+    console.log(document.getElementById("pdfPage").scrollHeight)
+
+
     const xcoordinate = boundingClientRect.x / windowX;
     const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
     const heightCoordinate = boundingClientRect.height / windowY;
