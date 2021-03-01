@@ -160,7 +160,7 @@ export class UploadConvertComponent implements OnInit {
 
           $element[0].classList.add('drag-and-resize-div');
           $element[0].classList.add('page' + this.page);
-          $element[0].style.position = "absolute";
+          $element[0].style.position = "2px solid";
           $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
           $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
           $element[0].style.border = "2px solid";
@@ -226,13 +226,26 @@ export class UploadConvertComponent implements OnInit {
   resetDragPosition($event){
     this.dragPosition = {x: 0, y: 0};
   }
+  checkIfDropExistsInPdfView(boundingClientRect: any) {
+    if (
+      boundingClientRect.top >= 0 &&
+      boundingClientRect.left >= 0 &&
+      boundingClientRect.right <= (document.getElementById('pdfPage').clientWidth) &&
+      boundingClientRect.bottom <= (document.getElementById('pdfPage').clientHeight)
+    ) {
+      console.log('----In the pdf View!-----proceed for drop----');
+      return true;
+    } else {
+      console.log('----out of the pdf View!-----abort drop----');
+      return false;
+    }
+  }
+
   drop(event, item, i) {
     const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
     let element = event.source.getRootElement();
     let boundingClientRect = element.getBoundingClientRect();
-    console.log(document.getElementById("pdfPage").offsetHeight)
-    console.log(document.getElementById("pdfPage").scrollHeight)
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
 
 
@@ -241,8 +254,9 @@ export class UploadConvertComponent implements OnInit {
     elementDragDiv.style['-webkit-user-drag'] = "";
     elementDragDiv.style['-webkit-tap-highlight-color'] = "";
     elementDragDiv.style['user-select'] = "";
-
-    console.log(elementDragDiv.getBoundingClientRect());
+    if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
+      return;
+    }
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
     const xcoordinate = boundingClientRect.x / windowX;
@@ -328,12 +342,20 @@ export class UploadConvertComponent implements OnInit {
 
     // let element = event.source.getRootElement();
     let boundingClientRect = event.getBoundingClientRect();
-    console.log(document.getElementById("pdfPage").offsetHeight)
-    console.log(document.getElementById("pdfPage").scrollHeight)
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
-
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+    if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
+
+      const pdfFieldElementCopy=this.pdfFieldElements[index];
+      event.style.left = (pdfFieldElementCopy.xcoordinate * windowX) + 'px';
+      event.style.top = ((pdfFieldElementCopy.ycoordinate - pdfFieldElementCopy.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+      event.style.border = "2px solid";
+      event.style.height = (pdfFieldElementCopy.height * windowY) + 'px';
+      event.style.width = (pdfFieldElementCopy.width * windowX) + 'px';
+      console.log(event);
+      return;
+    }
     const xcoordinate = boundingClientRect.x / windowX;
     const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
     const heightCoordinate = boundingClientRect.height / windowY;
