@@ -160,8 +160,9 @@ export class UploadConvertComponent implements OnInit {
 
           $element[0].classList.add('drag-and-resize-div');
           $element[0].classList.add('page' + this.page);
-          $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
-          $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+          $element[0].style.position = "absolute";
+          $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
+          $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
           $element[0].style.border = "2px solid";
           $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
           $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
@@ -271,8 +272,9 @@ export class UploadConvertComponent implements OnInit {
 
     $element[0].classList.add('drag-and-resize-div');
     $element[0].classList.add('page' + this.page);
-    $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
-    $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+    $element[0].style.position = 'absolute';
+    $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
+    $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
     $element[0].style.border = "2px solid";
     $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
     $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
@@ -757,8 +759,9 @@ export class UploadConvertComponent implements OnInit {
 
         $element[0].classList.add('drag-and-resize-div');
         $element[0].classList.add('page' + this.page);
-        $element[0].style.left = (pdfFieldElement.xcoordinate * windowX) + 'px';
-        $element[0].style.top = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+        $element[0].style.position='absolute';
+        $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
+        $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
         $element[0].style.border = "2px solid";
         $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
         $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
