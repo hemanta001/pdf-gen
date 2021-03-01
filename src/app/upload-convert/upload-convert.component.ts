@@ -346,14 +346,12 @@ export class UploadConvertComponent implements OnInit {
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
     if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
-
       const pdfFieldElementCopy=this.pdfFieldElements[index];
-      event.style.left = (pdfFieldElementCopy.xcoordinate * windowX) + 'px';
-      event.style.top = ((pdfFieldElementCopy.ycoordinate - pdfFieldElementCopy.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+      event.style.marginLeft = (pdfFieldElementCopy.xcoordinate * windowX) + 'px';
+      event.style.marginTop = ((pdfFieldElementCopy.ycoordinate - pdfFieldElementCopy.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
       event.style.border = "2px solid";
       event.style.height = (pdfFieldElementCopy.height * windowY) + 'px';
       event.style.width = (pdfFieldElementCopy.width * windowX) + 'px';
-      console.log(event);
       return;
     }
     const xcoordinate = boundingClientRect.x / windowX;
