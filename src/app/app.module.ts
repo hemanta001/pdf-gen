@@ -13,9 +13,11 @@ import {UploadConvertComponent} from './upload-convert/upload-convert.component'
 import {PdfDownloadComponent} from "./pdfDownload/pdf-download.component";
 import {RouterModule} from "@angular/router";
 import {AddUserInfoComponent} from './add-user-info/add-user-info.component';
+import { HeaderComponent } from './header/header.component';
+import { SectionTitleComponent } from './section-title/section-title.component';
 
 @NgModule({
-  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent],
+  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, HeaderComponent, SectionTitleComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -34,7 +36,12 @@ import {AddUserInfoComponent} from './add-user-info/add-user-info.component';
       {
         path: 'add-info',
         component: AddUserInfoComponent
-      }]),
+      },
+      {
+        path: 'section-title',
+        component: SectionTitleComponent
+      }
+    ]),
 
     DemoMaterialModule,
     AngularResizedEventModule,

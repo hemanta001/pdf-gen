@@ -1,30 +1,34 @@
+<app-header></app-header>
 <div id="formPdf">
-  <h1>Angular 9 Multiple Image Upload with Preview - ItSolutionStuff.com</h1>
 
-  <form [formGroup]="myForm" (ngSubmit)="submit()">
+  <div class="container">
+    <h1>Angular 9 Multiple Image Upload with Preview - ItSolutionStuff.com</h1>
+    <hr/>
+    <form [formGroup]="myForm" (ngSubmit)="submit()">
 
 
-    <div class="form-group">
-      <label for="file">File</label>
-      <input
-        formControlName="file"
-        id="file"
-        type="file"
-        class="form-control"
-        multiple=""
-        (change)="onFileChange($event)">
-      <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
-        <div *ngIf="f.file.errors.required">File is required.</div>
+      <div class="form-group">
+        <label for="file">File</label>
+        <input
+          formControlName="file"
+          id="file"
+          type="file"
+          class="form-control border-0"
+          multiple=""
+          (change)="onFileChange($event)">
+        <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
+          <div *ngIf="f.file.errors.required">File is required.</div>
+        </div>
       </div>
-    </div>
 
-    <img *ngFor='let url of images;let i=index' id="img{{i}}" [src]="url" height="150" width="200px"
-         style="margin: 3px;">
-    <br/>
+      <img *ngFor='let url of images;let i=index' id="img{{i}}" [src]="url" height="150" width="200px"
+           style="margin: 3px;">
+      <br/>
 
 
-    <button class="btn btn-primary" type="submit">Submit</button>
-  </form>
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+  </div>
 
 </div>
 <!--<div id="pdfViewer" hidden="hidden">-->
@@ -37,35 +41,38 @@
 <!--</div>-->
 <!--<div>-->
 
-<div id="pdfViewer" hidden="hidden">
-  <div class="row" style="position: relative">
-    <div class="col-md-10" >
-    <div id="pdfPage" (resize)="patchValues()" #pdfPage>
-      <pdf-viewer id="pdfShow" #abc  [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource" [render-text]="true" [original-size]='false'
-                  [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-      >
-
-      </pdf-viewer>
-</div>
-    </div>
-    <div class="col-md-2" id="here">
-      <!--      <div-->
-      <!--        cdkDropList-->
-      <!--        class="field-list">-->
-      <!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
-      <!--      </div>-->
-      <div id="box{{i}}" *ngFor="let list of fields;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)" [cdkDragFreeDragPosition]="dragPosition" (cdkDragStarted)="resetDragPosition($event)">{{list.title}}
+  <div id="pdfViewer" hidden="hidden">
+    <div class="row" style="position: relative">
+      <div class="col-md-9">
+<!--        <div class="">-->
+          <div id="pdfPage" (resize)="patchValues()" #pdfPage>
+            <pdf-viewer id="pdfShow" #abc [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource"
+                        [render-text]="true" [original-size]='false'
+                        [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
+            >
+            </pdf-viewer>
+<!--          </div>-->
+        </div>
       </div>
-      <br>
-      <button (click)="prev()">prev</button>
+      <div class="col-md-3" id="here">
+<!--        <app-section-title [title]="'FIELDS'"></app-section-title>-->
+        <!--      <div-->
+        <!--        cdkDropList-->
+        <!--        class="field-list">-->
+        <!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
+        <!--      </div>-->
+        <div id="box{{i}}" *ngFor="let list of fields;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)"
+             [cdkDragFreeDragPosition]="dragPosition" (cdkDragStarted)="resetDragPosition($event)">{{list.title}}
+        </div>
+        <br>
+        <button (click)="prev()">prev</button>
 
-      <button (click)="next()">Next</button>
-      Organization Name:<input type="text" required="required" id="orgName">
-      <button (click)="onsubmit()" [disabled]="processing">{{processing?'Processing':'Submit'}}</button>
+        <button (click)="next()">Next</button>
+        Organization Name:<input type="text" required="required" id="orgName">
+        <button (click)="onsubmit()" [disabled]="processing">{{processing ? 'Processing' : 'Submit'}}</button>
+      </div>
     </div>
+
+    <!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
 
   </div>
-
-<!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
-
-</div>

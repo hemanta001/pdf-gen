@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-add-user-info',
@@ -7,9 +8,9 @@ import {FormBuilder, FormGroup} from '@angular/forms';
   styleUrls: ['./add-user-info.component.scss']
 })
 export class AddUserInfoComponent implements OnInit {
-  userInfoForm: FormGroup;
+  idCardInfoForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
   }
 
   ngOnInit(): void {
@@ -17,14 +18,18 @@ export class AddUserInfoComponent implements OnInit {
   }
 
   buildUserInfoForm() {
-    this.userInfoForm = this.fb.group({
+    this.idCardInfoForm = this.fb.group({
       fullName: [],
       phoneNo: []
     });
   }
 
   submitUserInfo() {
-    console.log('form submitted')
+    console.log(this.idCardInfoForm.value)
+    this.http.post<{ fullName: string, phoneNo: number }>('http://localhost:8080/saveIdCardInfo', this.idCardInfoForm.value).subscribe(res => {
+      console.log(res);
+      alert("id card info saved successfully")
+    });
   }
 
 }
