@@ -6,7 +6,8 @@ import jsPDF from 'jspdf';
 import {PDFDocumentProxy, PDFProgressData, PDFSource} from "../pdf-viewer/pdf-viewer.module";
 import {PdfViewerComponent} from "../pdf-viewer/pdf-viewer.component";
 import {MatDialog} from "@angular/material/dialog";
-import {AddUserInfoComponent} from "../add-user-info/add-user-info.component";
+import {ModalOrganizationComponent} from "../modals/modal-organization/modal-organization.component";
+import {OrganizationService} from "../organization/service/organization.service";
 
 declare var $: any;
 
@@ -47,6 +48,7 @@ export class UploadConvertComponent implements OnInit {
   dragPosition = {x: 0, y: 0};
   name = 'Angular';
   fields: {title: string, type: string}[];
+  organizationFields: {id: number, name: string, selected: boolean}[];
   processing = false;
   destination = [];
 
@@ -81,7 +83,8 @@ export class UploadConvertComponent implements OnInit {
     fileSource: new FormControl('', [Validators.required])
   });
 
-  constructor(private http: HttpClient, private _uploadFileService: UploadConvertService,private matDialog:MatDialog) {
+  constructor(private http: HttpClient, private _uploadFileService: UploadConvertService,private matDialog:MatDialog,
+              private organizationService: OrganizationService) {
   }
 
   get f() {
@@ -338,11 +341,15 @@ export class UploadConvertComponent implements OnInit {
   updateTransparency(index, transparent) {
     this.pdfFieldElements[index]['transparent'] = transparent;
   }
-open(){
-  const dialogRef = this.matDialog.open(AddUserInfoComponent, {
-    width: '650px',
-    height: '550px',
-  });
+
+  openOrganizationModal(){
+    const dialogRef = this.matDialog.open(ModalOrganizationComponent, {
+      width: '650px',
+      height: '550px',
+    });
+    dialogRef.afterClosed().subscribe(data=>{
+      if(data != undefined) this.organizationFields.push(data);
+    })
 }
   updateForm(event, index) {
     // const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
@@ -462,7 +469,7 @@ open(){
     console.log(this.pdfFieldElements)
 
     formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
-    this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val(), formdata).subscribe(data => {
+    this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val() + '/' + $('#document-type').val(), formdata).subscribe(data => {
       this.processing = false;
       alert("file submitted successfully")
       location.reload();
@@ -777,6 +784,12 @@ open(){
     this.http.get<{ title: string, type: string }[]>("http://localhost:8080/getProperties?documentType=IdCard")
       .subscribe(data => {
           this.fields = data;
+        }
+      );
+
+    this.organizationService.getOrganizations().subscribe(data => {
+          data["selected"] = false;
+          this.organizationFields = data;
         }
       );
   }

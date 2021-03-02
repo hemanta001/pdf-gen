@@ -13,17 +13,17 @@ import {UploadConvertComponent} from './upload-convert/upload-convert.component'
 import {PdfDownloadComponent} from "./pdfDownload/pdf-download.component";
 import {RouterModule} from "@angular/router";
 import {AddUserInfoComponent} from './add-user-info/add-user-info.component';
-import {MatDialogModule} from "@angular/material/dialog";
+import {ModalOrganizationComponent} from "./modals/modal-organization/modal-organization.component";
+import {OrganizationService} from "./organization/service/organization.service";
 
 @NgModule({
-  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent],
+  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
     DragDropModule,
-    MatDialogModule,
     NoopAnimationsModule,
     RouterModule.forRoot([{
       path: '',

@@ -1,0 +1,15 @@
+<div class="container mt-4 pt-2 pl-2">
+  <h3>Fill the form below.</h3>
+  <hr/>
+  <form [formGroup]="organizationForm" >
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input formControlName="name" type="text" class="form-control" id="name">
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-success mb-4" type="submit" (click)="submitOrganization()">Submit</button>
+  </form>
+</div>
