@@ -1,9 +1,7 @@
 <div id="formPdf" hidden>
   <h1>Angular 9 Multiple Image Upload with Preview - ItSolutionStuff.com</h1>
-<button (click)="open()">save</button>
+  <button (click)="open()">save</button>
   <form [formGroup]="myForm" (ngSubmit)="submit()">
-
-
     <div class="form-group">
       <label for="file">File</label>
       <input
@@ -21,61 +19,54 @@
     <img *ngFor='let url of images;let i=index' id="img{{i}}" [src]="url" height="150" width="200px"
          style="margin: 3px;">
     <br/>
-
-
     <button class="btn btn-primary" type="submit">Submit</button>
   </form>
-
 </div>
-<!--<div id="pdfViewer" hidden="hidden">-->
-<!--  <pdf-viewer-->
-<!--    [src]='finalPdfSource'-->
-<!--    [render-text]="true"-->
-<!--    style="display: block;"-->
-<!--  ></pdf-viewer>-->
-<!--  <a href="{{pdfSource}}">Click to download</a>-->
-<!--</div>-->
-<!--<div>-->
-
 <div id="pdfViewer">
   <div class="row" style="position: relative">
-    <div class="col-md-9" style="background-color: #FFFFFF">
-      <div class="shadow" id="pdfPage" (resize)="patchValues()" #pdfPage>
-        <pdf-viewer id="pdfShow" #abc [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource"
-                    [render-text]="true" [original-size]='false'
-                    [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-        >
-        </pdf-viewer>
-      </div>
-      <div class="row justify-content-center mt-3">
+    <div class="col-9 shadow" style="background-color: #FFFFFF">
+      <div id="pdfPage"  (resize)="patchValues()" #pdfPage>
+        <div class="row">
+          <div class="col-1" style="margin-top: 400px;">
+            <a (click)="prev()" style="cursor: pointer; float: right" class="h1 text-center">&#8249;</a>
+          </div>
+          <div class="col-10">
+            <div class="row">
+              <div class="col-12" style="text-align: center">
+                <pdf-viewer id="pdfShow" #abc [(page)]="page" (window:resize)="reload()" [show-all]="false"
+                            [src]="pdfSource"
+                            [render-text]="true" [original-size]='false'
+                            [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
+                >
+                </pdf-viewer>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-12" style="text-align: center">
+                <label for="orgName">Organization Name</label>
+                <input style="text-align: center" placeholder="enter organization name here" type="text" required="required" id="orgName" class="form-control">
+                <button
+                  (click)="onsubmit()"
+                  [disabled]="processing"
+                  class="btn btn-success mt-2"
+                >
+                  {{processing ? 'Processing' : 'Submit'}}
+                </button>
 
-        <div class="col-md-12">
-          <button (click)="prev()" class="btn btn-primary">prev</button>
-          <button (click)="next()" class="btn btn-primary">Next</button>
-        </div>
-        <div class="col-md-12">
-          <label for="orgName">Organization Name</label>
-          <input type="text" required="required" id="orgName" class="form-control w-25">
-          <button
-            (click)="onsubmit()"
-            [disabled]="processing"
-            class="btn btn-success mt-2"
-          >
-            {{processing ? 'Processing' : 'Submit'}}
-          </button>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-1" style="margin-top: 400px;">
+            <a (click)="next()" style="cursor: pointer;" class="h1">&#8250;</a>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col ml-2" id="here" style="background-color: #FFFFFF">
-      <div style="background-color: #0C9890; height: 50px" class="text-white mt-2 p-2">
+    <div class="col-3 shadow" id="here" style="background-color: #FFFFFF">
+      <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
         <h4 class="text-center">FIELDS</h4>
       </div>
-      <!--      <div-->
-      <!--        cdkDropList-->
-      <!--        class="field-list">-->
-      <!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
-      <!--      </div>-->
-      <!--      <div>-->
       <div
         id="box{{i}}"
         *ngFor="let list of fields;let i=index;"
@@ -89,37 +80,27 @@
         {{list.title}}
       </div>
 
-      <div class="row">
-        <div class="col-md-8">
-          <div class="row" style="border: 2px solid black;width: 240px;">
-            <div class="col-md-7">
+      <div class="row" [hidden]="true">
+        <div class="col-10">
+          <div class="row" style="border: 2px solid black;">
+            <div class="col-7">
               title
             </div>
-            <div class="col-md-5">
-              <select style="border: 1px solid black">
+            <div class="col-5">
+              <select class="border-0">
                 <option>option 1</option>
                 <option>option 2</option>
               </select>
             </div>
-            <div class="col">
-
-            </div>
           </div>
         </div>
-        <div class="col-md-1 ml-3 mt-1">
-          <div class="row">
-            <div class="col-md-12 close-btn" aria-label="Close" style="border: 2px solid black; cursor: pointer;">
-              <span aria-hidden="true">&times;</span>
-            </div>
-          </div>
+        <div class="col-2 h1 text-danger font-weight-bold"
+             style="cursor: pointer; margin-left: -15px; margin-top: -15px">
+          &times;
         </div>
       </div>
-      <!--      </div>-->
 
 
     </div>
   </div>
-
-  <!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
-
 </div>
