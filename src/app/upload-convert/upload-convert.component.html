@@ -1,4 +1,4 @@
-<div id="formPdf">
+<div id="formPdf" hidden>
   <h1>Angular 9 Multiple Image Upload with Preview - ItSolutionStuff.com</h1>
 
   <form [formGroup]="myForm" (ngSubmit)="submit()">
@@ -37,35 +37,89 @@
 <!--</div>-->
 <!--<div>-->
 
-<div id="pdfViewer" hidden="hidden">
+<div id="pdfViewer">
   <div class="row" style="position: relative">
-    <div class="col-md-10" >
-    <div id="pdfPage" (resize)="patchValues()" #pdfPage>
-      <pdf-viewer id="pdfShow" #abc  [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource" [render-text]="true" [original-size]='false'
-                  [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-      >
+    <div class="col-md-9" style="background-color: #FFFFFF">
+      <div class="shadow" id="pdfPage" (resize)="patchValues()" #pdfPage>
+        <pdf-viewer id="pdfShow" #abc [(page)]="page" (window:resize)="reload()" [show-all]="false" [src]="pdfSource"
+                    [render-text]="true" [original-size]='false'
+                    [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
+        >
+        </pdf-viewer>
+      </div>
+      <div class="row justify-content-center mt-3">
 
-      </pdf-viewer>
-</div>
+        <div class="col-md-12">
+          <button (click)="prev()" class="btn btn-primary">prev</button>
+          <button (click)="next()" class="btn btn-primary">Next</button>
+        </div>
+        <div class="col-md-12">
+          <label for="orgName">Organization Name</label>
+          <input type="text" required="required" id="orgName" class="form-control w-25">
+          <button
+            (click)="onsubmit()"
+            [disabled]="processing"
+            class="btn btn-success mt-2"
+          >
+            {{processing ? 'Processing' : 'Submit'}}
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="col-md-2" id="here">
+    <div class="col ml-2" id="here" style="background-color: #FFFFFF">
+      <div style="background-color: #0C9890; height: 50px" class="text-white mt-2 p-2">
+        <h4 class="text-center">FIELDS</h4>
+      </div>
       <!--      <div-->
       <!--        cdkDropList-->
       <!--        class="field-list">-->
       <!--        <div class="field-box" *ngFor="let item of origin" cdkDrag (cdkDragEnded)="drop($event,item)">{{item.title}}</div>-->
       <!--      </div>-->
-      <div id="box{{i}}" *ngFor="let list of fields;let i=index;" cdkDrag (cdkDragEnded)="drop($event,list,i)" [cdkDragFreeDragPosition]="dragPosition" (cdkDragStarted)="resetDragPosition($event)">{{list.title}}
+      <!--      <div>-->
+      <div
+        id="box{{i}}"
+        *ngFor="let list of fields;let i=index;"
+        cdkDrag
+        (cdkDragEnded)="drop($event,list,i)"
+        [cdkDragFreeDragPosition]="dragPosition"
+        (cdkDragStarted)="resetDragPosition($event)"
+        class="text-center text-white mt-1 "
+        style="background-color: #2C6BB6;"
+      >
+        {{list.title}}
       </div>
-      <br>
-      <button (click)="prev()">prev</button>
 
-      <button (click)="next()">Next</button>
-      Organization Name:<input type="text" required="required" id="orgName">
-      <button (click)="onsubmit()" [disabled]="processing">{{processing?'Processing':'Submit'}}</button>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="row" style="border: 2px solid black;width: 240px;">
+            <div class="col-md-7">
+              title
+            </div>
+            <div class="col-md-5">
+              <select style="border: 1px solid black">
+                <option>option 1</option>
+                <option>option 2</option>
+              </select>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1 ml-3 mt-1">
+          <div class="row">
+            <div class="col-md-12 close-btn" aria-label="Close" style="border: 2px solid black; cursor: pointer;">
+              <span aria-hidden="true">&times;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--      </div>-->
+
+
     </div>
-
   </div>
 
-<!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
+  <!--<a href="https://secureid.blob.core.windows.net/documents/1610257651989.pdf">Click to download</a>-->
 
 </div>

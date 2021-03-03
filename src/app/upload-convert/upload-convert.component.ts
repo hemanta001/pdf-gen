@@ -73,7 +73,7 @@ export class UploadConvertComponent implements OnInit {
   docFile = File;
   currentFileUpload: File;
   fileToUpload: any;
-  pdfSource: string;
+  pdfSource: string='https://secureid.blob.core.windows.net/documents/1614585679625.pdf';
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
     fileSource: new FormControl('', [Validators.required])
@@ -274,6 +274,9 @@ export class UploadConvertComponent implements OnInit {
       "transparent": false
     };
     this.pdfFieldElements.push(pdfFieldElement);
+
+
+    ////////////////////////////////////
     const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
       '  <option value="Opaque">Opaque</option>\n' +
       '  <option value="Transparent">Transparent</option>\n' +
@@ -331,6 +334,8 @@ export class UploadConvertComponent implements OnInit {
       }
       this.updateTransparency(index, transparent);
     });
+
+    //////////////////////////////////////////////////
   };
 
   updateTransparency(index, transparent) {
