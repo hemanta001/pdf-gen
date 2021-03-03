@@ -5,6 +5,8 @@ import {UploadConvertService} from './upload-convert.service';
 import jsPDF from 'jspdf';
 import {PDFDocumentProxy, PDFProgressData, PDFSource} from "../pdf-viewer/pdf-viewer.module";
 import {PdfViewerComponent} from "../pdf-viewer/pdf-viewer.component";
+import {MatDialog} from "@angular/material/dialog";
+import {AddUserInfoComponent} from "../add-user-info/add-user-info.component";
 
 declare var $: any;
 
@@ -79,7 +81,7 @@ export class UploadConvertComponent implements OnInit {
     fileSource: new FormControl('', [Validators.required])
   });
 
-  constructor(private http: HttpClient, private _uploadFileService: UploadConvertService) {
+  constructor(private http: HttpClient, private _uploadFileService: UploadConvertService,private matDialog:MatDialog) {
   }
 
   get f() {
@@ -341,7 +343,12 @@ export class UploadConvertComponent implements OnInit {
   updateTransparency(index, transparent) {
     this.pdfFieldElements[index]['transparent'] = transparent;
   }
-
+open(){
+  const dialogRef = this.matDialog.open(AddUserInfoComponent, {
+    width: '650px',
+    height: '550px',
+  });
+}
   updateForm(event, index) {
     // const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
 
