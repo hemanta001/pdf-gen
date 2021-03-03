@@ -40,15 +40,17 @@ export class PdfDownloadComponent {
   }
 
   downloadPdf() {
+    this.processing = true;
+    this.hasFormErrors = false;
     this.checkFormErrors();
     if(!this.hasFormErrors){
-      this.processing = true;
       this.pdfDownloadService.downloadPdf(this.pdfDownloadForm.value).subscribe(data => {
-        window.location.reload();
+        window.location.href = data["fileName"];
+        this.processing = false;
       },error => {
         if(error["status"] == 404){
           alert(error["error"]);
-          window.location.reload();
+          this.processing = false;
         }
       });
     }else{
@@ -57,8 +59,8 @@ export class PdfDownloadComponent {
   }
 
   checkFormErrors(){
-    Object.values(this.pdfDownloadForm.controls).forEach(key=> {
-      if(key.errors){
+    Object.values(this.pdfDownloadForm.controls).forEach(value=> {
+      if(value.errors){
         this.hasFormErrors = true;
       }
     });

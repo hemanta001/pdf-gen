@@ -471,7 +471,7 @@ export class UploadConvertComponent implements OnInit {
     formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
     this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val() + '/' + $('#document-type').val(), formdata).subscribe(data => {
       this.processing = false;
-      alert("file submitted successfully")
+      alert(data["response"])
       location.reload();
       console.log("yesssssssssssssss");
     });
