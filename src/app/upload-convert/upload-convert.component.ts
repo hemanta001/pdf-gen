@@ -196,6 +196,9 @@ export class UploadConvertComponent implements OnInit {
     $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
     $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
     $element[0].setAttribute("index", index);
+    if (pdfFieldElement['isDeleted']) {
+      $element[0].style.visibility = 'hidden';
+    }
     return $element;
   }
 
