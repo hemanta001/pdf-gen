@@ -250,51 +250,13 @@ export class UploadConvertComponent implements OnInit {
     $element[0].style.border = "2px solid";
     $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
     $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
-
-    // $element[0].textContent = item.title;
     $element[0].setAttribute("index", this.pdfFieldElements.length - 1);
 
     $('#pdfPage').append($element);
-    let closeButton = document.getElementsByClassName("close");
-
-    $('.close-btn').on('click', (e) => {
-      console.log("drop wala")
-      let divToRemove = e.target.closest(".drag-and-resize-div");
-      this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-      divToRemove.style.visibility = "hidden";
-      // divToRemove.setAttribute("visibility","hidden");
-    })
-
-    //   console.log(this.getAttribute("index"));
-    // });
-
-    $element.draggable().bind('dragstop', (e) => {
-      const index = e.target.getAttribute("index");
-      this.updateForm(e.target, index)
-    });
-    $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
-      const index = e.target.getAttribute("index");
-      console.log("befor form update...")
-      console.log(this.pdfFieldElements[index])
-      this.updateForm(e.target, index)
-      console.log("after form update...")
-      console.log(this.pdfFieldElements[index])
-    });
-    $('select').on('change', (e) => {
-      const index = e.target.id.split('-')[1];
-      console.log(index);
-      if (!index) {
-        return;
-      }
-      const value = e.target.value;
-      let transparent = false;
-      if (value === 'Transparent') {
-        transparent = true;
-      }
-      this.updateTransparency(index, transparent);
-    });
-
-    //////////////////////////////////////////////////
+    this.closeButton();
+    this.draggableDiv($element);
+    this.resizableDiv($element);
+    this.selectOnChange();
   };
 
   updateTransparency(index, transparent) {
@@ -390,6 +352,45 @@ export class UploadConvertComponent implements OnInit {
     this.pdfFieldElements[index] = pdfFieldElement;
   }
 
+  closeButton() {
+    $('.close-btn').on('click', (e) => {
+      const divToRemove = e.target.closest(".drag-and-resize-div");
+      this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
+      divToRemove.style.visibility = "hidden";
+    });
+  }
+
+  selectOnChange() {
+    $('select').on('change', (e) => {
+      const index = e.target.id.split('-')[1];
+      console.log(index);
+      if (!index) {
+        return;
+      }
+      const value = e.target.value;
+      let transparent = false;
+      if (value === 'Transparent') {
+        transparent = true;
+      }
+      this.updateTransparency(index, transparent);
+    });
+
+  }
+
+  resizableDiv($element: any) {
+    $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
+      const index = e.target.getAttribute("index");
+      this.updateForm(e.target, index)
+    });
+  }
+
+  draggableDiv($element: any) {
+    $element.draggable().bind('dragstop', (e) => {
+      const index = e.target.getAttribute("index");
+      this.updateForm(e.target, index)
+    });
+  }
+
   onsubmit() {
     this.processing = true;
     const formdata: FormData = new FormData();
@@ -406,6 +407,7 @@ export class UploadConvertComponent implements OnInit {
       location.reload();
     });
   }
+
   /**
    * Set custom path to pdf worker
    */
