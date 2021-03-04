@@ -9,7 +9,7 @@ export class PdfDownloadService {
 
   constructor(private http: HttpClient) { }
 
-  downloadPdf(downloadForm: FormGroup){
+  downloadPdf(downloadForm: any){
     return this.http.post("http://localhost:8080/downloadPdfOfSecuredIdUser", downloadForm);
   }
 }

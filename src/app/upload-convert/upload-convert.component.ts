@@ -329,6 +329,10 @@ export class UploadConvertComponent implements OnInit {
     });
     $('select').on('change', (e) => {
       const index = e.target.id.split('-')[1];
+      console.log(index);
+      if(!index){
+        return;
+      }
       const value = e.target.value;
       let transparent = false;
       if (value === 'Transparent') {
