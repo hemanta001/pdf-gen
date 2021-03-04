@@ -282,14 +282,38 @@ export class UploadConvertComponent implements OnInit {
 
 
     ////////////////////////////////////
-    const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
-      '  <option value="Opaque">Opaque</option>\n' +
-      '  <option value="Transparent">Transparent</option>\n' +
-      '</select>\n' +
-      `<button class="close-btn" aria-label="Close">\n` +
-      '  <span aria-hidden="true">&times;</span>\n' +
-      '</button></div>'
-    );
+    // const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
+    //   '  <option value="Opaque">Opaque</option>\n' +
+    //   '  <option value="Transparent">Transparent</option>\n' +
+    //   '</select>\n' +
+    //   `<button class="close-btn" aria-label="Close">\n` +
+    //   '  <span aria-hidden="true">&times;</span>\n' +
+    //   '</button></div>'
+    // );
+    const $element = $(`
+        <div class="row dropped-field">
+        <div class="col-10">
+          <div class="row">
+            <div class="col-7">
+              title
+            </div>
+            <div class="col-5 hide-it">
+              <select>
+                <option>option 1</option>
+                <option>option 2</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-2 h1 text-danger font-weight-bold hide-it"
+             style="cursor: pointer; margin-left: -15px; margin-top: -15px">
+          &times;
+        </div>
+      </div>
+
+
+
+        `);
 
 
     $element[0].classList.add('drag-and-resize-div');
