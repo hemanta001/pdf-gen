@@ -16,6 +16,8 @@ export class PdfDownloadComponent {
   pdfDownloadForm: FormGroup;
   processing = false;
   organizationFields: { id: number, name: string, selected: boolean }[];
+  isDocumentTypeSelected = false;
+  idType = "Secured ID";
   // previewPdfSource = ""
 
   constructor(private http: HttpClient, private organizationService: OrganizationService, private pdfDownloadService: PdfDownloadService,
@@ -35,7 +37,7 @@ export class PdfDownloadComponent {
     this.pdfDownloadForm = this.formBuilder.group({
       "organizationId": ["", Validators.required],
       "documentType": ["", Validators.required],
-      "securedUserId": ["", Validators.required]
+      "userId": ["", Validators.required]
     });
   }
 
@@ -55,6 +57,7 @@ export class PdfDownloadComponent {
       });
     }else{
       alert("Please fill up the form properly!")
+      this.processing = false;
     }
   }
 
@@ -64,6 +67,26 @@ export class PdfDownloadComponent {
         this.hasFormErrors = true;
       }
     });
+  }
+
+  onDocumentTypeChange(){
+    var documentType = this.pdfDownloadForm.value.documentType;
+    switch (documentType) {
+      case "KYC":
+        this.isDocumentTypeSelected = true;
+        this.idType = "Secured ID";
+        break;
+
+      case "IDCARD":
+        this.isDocumentTypeSelected = true;
+        this.idType = "Card ID";
+        break;
+
+      default:
+        this.isDocumentTypeSelected = false;
+        break;
+    }
+
   }
 
   // preview(){
