@@ -26,8 +26,8 @@
   <div class="row" style="position: relative">
     <div class="col-9" style="background-color: #FFFFFF">
       <div id="pdfPage" (resize)="patchValues()" #pdfPage>
-        <div class="row">
-          <div class="col-1" style="margin-top: 400px;">
+        <div class="row" style="align-items: center">
+          <div class="col-1" >
             <a (click)="prev()" style="cursor: pointer; float: right" class="h1 text-center">&#8249;</a>
           </div>
           <div class="col-10">
@@ -43,30 +43,30 @@
             </div>
             <div class="row mt-2">
               <div class="col-12" style="text-align: center">
-                <div class="input-group">
-                  <label for="orgName">
-                    Organization Name:
-                  </label>
-                  <select required="required" id="orgName">
-                    <option *ngFor="let o of organizationFields" value="{{o.id}}" selected="{{o.selected}}">
-                      {{o.name}}
-                    </option>
-                  </select>
-                  <span class="input-group-btn">
-          <button (click)="openOrganizationModal()" class="btn btn-info">Add</button>
-        </span>
-                </div>
-
-                Document Type: <select required="required" id="document-type">
-                <option value="KYC">KYC</option>
-                <option value="IDCARD">IDCARD</option>
-              </select>
-
-                <button (click)="onsubmit()" [disabled]="processing">{{processing ? 'Processing' : 'Submit'}}</button>
+                <!--                <div class="input-group">-->
+                <label for="orgName">
+                  Organization Name:
+                </label>
+                <select required="required" id="orgName">
+                  <option *ngFor="let o of organizationFields" value="{{o.id}}" selected="{{o.selected}}">
+                    {{o.name}}
+                  </option>
+                </select>
+                <span class="input-group-btn" style="padding: 0 0 0 5px"><button (click)="openOrganizationModal()"
+                                                      class="btn btn-info text-center" style="width: 3.5rem; height: 1.8rem; padding: 0 0 0 5px">Add</button></span>
+                <!--                </div>-->
+                <br>
+                <label for="document-type">Document Type:</label>
+                <select required="required" id="document-type">
+                  <option value="KYC">KYC</option>
+                  <option value="IDCARD">IDCARD</option>
+                </select>
+                <br>
+                <button (click)="onsubmit()" [disabled]="processing" class="btn btn-success">{{processing ? 'Processing' : 'Submit'}}</button>
               </div>
             </div>
           </div>
-          <div class="col-1" style="margin-top: 400px;">
+          <div class="col-1">
             <a (click)="next()" style="cursor: pointer;" class="h1">&#8250;</a>
           </div>
         </div>
@@ -89,7 +89,7 @@
         {{list.title}}
       </div>
 
-      <div class="row">
+      <div class="row" hidden>
         <div class="col-10">
           <div class="row" style="border: 2px solid black;">
             <div class="col-7">
