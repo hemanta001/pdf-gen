@@ -1,4 +1,47 @@
-<p>I am at pdf doenload</p>
-Secured Id:<input type="text" id="securedId">
-Bank Name:<input type="text" id="bankName">
-<button [disabled]="processing" (click)="downloadPdf()">{{processing?'Processing':'Submit'}}</button>
+<form [formGroup]="pdfDownloadForm">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        Organization Name:
+        <select class="form-control" required="required" id="orgName" formControlName="organizationId">
+          <option value="">Select an organization</option>
+          <option *ngFor="let o of organizationFields" value="{{o.id}}" selected="{{o.selected}}">
+            {{o.name}}
+          </option>
+        </select>
+        <div class="alert alert-danger" *ngIf="pdfDownloadForm.controls['organizationId'].errors?.required && pdfDownloadForm.controls['organizationId'].touched">
+          Organization is required
+        </div>
+      </div>
+      <div class="col-md-6">
+        Document Type: <select class="form-control" required="required" id="document-type" formControlName="documentType">
+        <option value="">Select a document type</option>
+        <option value="KYC">KYC</option>
+        <option value="IDCARD">IDCARD</option>
+      </select>
+        <div class="alert alert-danger" *ngIf="pdfDownloadForm.controls['documentType'].errors?.required && pdfDownloadForm.controls['documentType'].touched">
+          Document Type is required
+        </div>
+      </div>
+      <div class="col-md-6">
+        Secured Id:<input class="form-control" type="text" id="securedId" formControlName="securedUserId">
+        <div class="alert alert-danger" *ngIf="pdfDownloadForm.controls['securedUserId'].errors?.required && pdfDownloadForm.controls['securedUserId'].touched">
+          Secured ID is required
+        </div>
+      </div>
+    </div>
+<!--    <button class="btn btn-info" (click)="preview()">Preview</button>-->
+    <button class="btn btn-success" [disabled]="processing" (click)="downloadPdf()">{{processing ? 'Processing' : 'Submit'}}</button>
+  </div>
+
+  <div id="pdfPage" #pdfPage>
+<!--    <pdf-viewer id="pdfShow" #abc [src]="previewPdfSource"-->
+<!--                [render-text]="true" [original-size]='false'-->
+<!--                [fit-to-page]='false'-->
+<!--    >-->
+
+<!--    </pdf-viewer>-->
+  </div>
+</form>
+
+

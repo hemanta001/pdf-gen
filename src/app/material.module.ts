@@ -10,6 +10,7 @@ import {
   MatOptionModule,
   MatSelectModule
 } from '@angular/material';
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import {
     MatOptionModule,
     MatToolbarModule,
     MatSidenavModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule
   ],
   exports: [
     MatButtonModule,

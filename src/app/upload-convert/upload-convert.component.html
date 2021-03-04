@@ -1,6 +1,6 @@
-<div id="formPdf" hidden>
+<div id="formPdf">
   <h1>Angular 9 Multiple Image Upload with Preview - ItSolutionStuff.com</h1>
-  <button (click)="open()">save</button>
+
   <form [formGroup]="myForm" (ngSubmit)="submit()">
     <div class="form-group">
       <label for="file">File</label>
@@ -22,10 +22,10 @@
     <button class="btn btn-primary" type="submit">Submit</button>
   </form>
 </div>
-<div id="pdfViewer">
+<div id="pdfViewer" hidden="hidden">
   <div class="row" style="position: relative">
-    <div class="col-9 shadow" style="background-color: #FFFFFF">
-      <div id="pdfPage"  (resize)="patchValues()" #pdfPage>
+    <div class="col-9" style="background-color: #FFFFFF">
+      <div id="pdfPage" (resize)="patchValues()" #pdfPage>
         <div class="row">
           <div class="col-1" style="margin-top: 400px;">
             <a (click)="prev()" style="cursor: pointer; float: right" class="h1 text-center">&#8249;</a>
@@ -43,19 +43,28 @@
             </div>
             <div class="row mt-2">
               <div class="col-12" style="text-align: center">
-                <label for="orgName">Organization Name</label>
-                <input style="text-align: center" placeholder="enter organization name here" type="text" required="required" id="orgName" class="form-control">
-                <button
-                  (click)="onsubmit()"
-                  [disabled]="processing"
-                  class="btn btn-success mt-2"
-                >
-                  {{processing ? 'Processing' : 'Submit'}}
-                </button>
+                <div class="input-group">
+                  <label for="orgName">
+                    Organization Name:
+                  </label>
+                  <select required="required" id="orgName">
+                    <option *ngFor="let o of organizationFields" value="{{o.id}}" selected="{{o.selected}}">
+                      {{o.name}}
+                    </option>
+                  </select>
+                  <span class="input-group-btn">
+          <button (click)="openOrganizationModal()" class="btn btn-info">Add</button>
+        </span>
+                </div>
 
+                Document Type: <select required="required" id="document-type">
+                <option value="KYC">KYC</option>
+                <option value="IDCARD">IDCARD</option>
+              </select>
+
+                <button (click)="onsubmit()" [disabled]="processing">{{processing ? 'Processing' : 'Submit'}}</button>
               </div>
             </div>
-
           </div>
           <div class="col-1" style="margin-top: 400px;">
             <a (click)="next()" style="cursor: pointer;" class="h1">&#8250;</a>
@@ -80,7 +89,7 @@
         {{list.title}}
       </div>
 
-      <div class="row" >
+      <div class="row">
         <div class="col-10">
           <div class="row" style="border: 2px solid black;">
             <div class="col-7">
@@ -99,7 +108,6 @@
           &times;
         </div>
       </div>
-
 
     </div>
   </div>
