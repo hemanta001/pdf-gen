@@ -197,25 +197,30 @@ export class UploadConvertComponent implements OnInit {
   }
 
   drop(event, item, i) {
-    const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
-
-    let element = event.source.getRootElement();
-    let boundingClientRect = element.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
-
-
-    elementDragDiv.style.transform = 'translate3d(0,0,0)';
-    elementDragDiv.style['touch-action'] = "";
-    elementDragDiv.style['-webkit-user-drag'] = "";
-    elementDragDiv.style['-webkit-tap-highlight-color'] = "";
-    elementDragDiv.style['user-select'] = "";
+    const element = event.source.getRootElement();
+    const boundingClientRect = element.getBoundingClientRect();
+    event.source.element.nativeElement.style.transform = 'none';// visually reset element to its origin
+    const source: any = event.source;
+    source._passiveTransform = {x: 0, y: 0};
     if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
       return;
     }
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+    const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item.title);
+    const $element = this.getDroppedDiv(pdfFieldElement, windowX, windowY);
+    $('#pdfPage').append($element);
+
+    this.closeButton();
+    this.draggableDiv($element);
+    this.resizableDiv($element);
+    this.selectOnChange();
+  };
+
+  setPdfFieldElements(boundingClientRect: any, windowX: any, windowY: any, scrollTop: any, title: any) {
     const xcoordinate = boundingClientRect.x / windowX;
-    const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
+    const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY;
     const heightCoordinate = boundingClientRect.height / windowY;
     const widthCoordinate = boundingClientRect.width / windowX;
     const pdfFieldElement = {
@@ -225,14 +230,15 @@ export class UploadConvertComponent implements OnInit {
       "width": widthCoordinate,
       "isDeleted": false,
       "pageNum": this.page,
-      "fieldName": item.title,
+      "fieldName": title,
       "transparent": false
     };
     this.pdfFieldElements.push(pdfFieldElement);
+    return pdfFieldElement;
+  }
 
-
-    ////////////////////////////////////
-    const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
+  getDroppedDiv(pdfFieldElement: any, windowX: any, windowY: any) {
+    const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
       '  <option value="Opaque">Opaque</option>\n' +
       '  <option value="Transparent">Transparent</option>\n' +
       '</select>\n' +
@@ -240,8 +246,6 @@ export class UploadConvertComponent implements OnInit {
       '  <span aria-hidden="true">&times;</span>\n' +
       '</button></div>'
     );
-
-
     $element[0].classList.add('drag-and-resize-div');
     $element[0].classList.add('page' + this.page);
     $element[0].style.position = 'absolute';
@@ -251,13 +255,8 @@ export class UploadConvertComponent implements OnInit {
     $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
     $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
     $element[0].setAttribute("index", this.pdfFieldElements.length - 1);
-
-    $('#pdfPage').append($element);
-    this.closeButton();
-    this.draggableDiv($element);
-    this.resizableDiv($element);
-    this.selectOnChange();
-  };
+    return $element;
+  }
 
   updateTransparency(index, transparent) {
     this.pdfFieldElements[index]['transparent'] = transparent;
