@@ -15,9 +15,11 @@ import {RouterModule} from "@angular/router";
 import {AddUserInfoComponent} from './add-user-info/add-user-info.component';
 import {ModalOrganizationComponent} from "./modals/modal-organization/modal-organization.component";
 import {OrganizationService} from "./organization/service/organization.service";
+import { LoginComponent } from './auth/login/login.component';
+import {AuthGuard} from "./auth/auth.guard";
 
 @NgModule({
-  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent],
+  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent, LoginComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
@@ -27,7 +29,8 @@ import {OrganizationService} from "./organization/service/organization.service";
     NoopAnimationsModule,
     RouterModule.forRoot([{
       path: '',
-      component: UploadConvertComponent
+      component: UploadConvertComponent,
+      canActivate: [AuthGuard]
     },
       {
         path: 'pdf-download',
@@ -35,7 +38,12 @@ import {OrganizationService} from "./organization/service/organization.service";
       },
       {
         path: 'add-info',
-        component: AddUserInfoComponent
+        component: AddUserInfoComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'login',
+        component: LoginComponent
       }]),
 
     DemoMaterialModule,

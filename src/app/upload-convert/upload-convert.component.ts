@@ -8,6 +8,7 @@ import {PdfViewerComponent} from "../pdf-viewer/pdf-viewer.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ModalOrganizationComponent} from "../modals/modal-organization/modal-organization.component";
 import {OrganizationService} from "../organization/service/organization.service";
+import {Router} from "@angular/router";
 
 declare var $: any;
 
@@ -84,7 +85,7 @@ export class UploadConvertComponent implements OnInit {
   });
 
   constructor(private http: HttpClient, private _uploadFileService: UploadConvertService,private matDialog:MatDialog,
-              private organizationService: OrganizationService) {
+              private organizationService: OrganizationService, private router: Router) {
   }
 
   get f() {
@@ -899,6 +900,11 @@ export class UploadConvertComponent implements OnInit {
       }
       i++;
     }
+  }
+
+  logout(){
+    localStorage.removeItem("token");
+    this.router.navigate(["/login"]);
   }
 
 }
