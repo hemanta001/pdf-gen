@@ -14,18 +14,18 @@
         </div>
       </div>
       <div class="col-md-6">
-        Document Type: <select class="form-control" required="required" id="document-type" formControlName="documentType">
-        <option value="">Select a document type</option>
-        <option value="KYC">KYC</option>
-        <option value="IDCARD">IDCARD</option>
-      </select>
+        Document Type: <mat-select class="form-control" required="required" id="document-type" formControlName="documentType" (selectionChange)="onDocumentTypeChange()">
+        <mat-option value="">Select a document type</mat-option>
+        <mat-option value="KYC">KYC</mat-option>
+        <mat-option value="IDCARD">IDCARD</mat-option>
+      </mat-select>
         <div class="alert alert-danger" *ngIf="pdfDownloadForm.controls['documentType'].errors?.required && pdfDownloadForm.controls['documentType'].touched">
           Document Type is required
         </div>
       </div>
       <div class="col-md-6">
-        Secured Id:<input class="form-control" type="text" id="securedId" formControlName="securedUserId">
-        <div class="alert alert-danger" *ngIf="pdfDownloadForm.controls['securedUserId'].errors?.required && pdfDownloadForm.controls['securedUserId'].touched">
+        {{idType}}:<input class="form-control" type="text" id="securedId" formControlName="userId" [attr.disabled]="isDocumentTypeSelected ? null : ''" [placeholder]="isDocumentTypeSelected ? '': 'Select a document type first'" >
+        <div class="alert alert-danger" *ngIf="pdfDownloadForm.controls['userId'].errors?.required && pdfDownloadForm.controls['userId'].touched">
           Secured ID is required
         </div>
       </div>
