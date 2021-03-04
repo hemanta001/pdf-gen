@@ -9,6 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ModalOrganizationComponent} from "../modals/modal-organization/modal-organization.component";
 import {OrganizationService} from "../organization/service/organization.service";
 import {Router} from "@angular/router";
+import {environment} from "../../environments/environment";
 
 declare var $: any;
 
@@ -24,32 +25,14 @@ export class UploadConvertComponent implements OnInit {
   totalPages: number;
   pdfSrc: string | PDFSource | ArrayBuffer = './assets/abc.pdf';
   @ViewChild('pdfPage') div: ElementRef;
-  items = [
-    'Item 0',
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
-  ];
   rtime: any;
   timeout = false;
   delta = 200;
   pdfFieldElements: any = [];
-  // or pass options as object
-  // pdfSrc: any = {
-  //   url: './assets/pdf-test.pdf',
-  //   withCredentials: true,
-  //// httpHeaders: { // cross domain
-  ////   'Access-Control-Allow-Credentials': true
-  //// }
-  // };
   dragPosition = {x: 0, y: 0};
   name = 'Angular';
-  fields: {title: string, type: string}[];
-  organizationFields: {id: number, name: string, selected: boolean}[];
+  fields: { title: string, type: string }[];
+  organizationFields: { id: number, name: string, selected: boolean }[];
   processing = false;
   destination = [];
 
@@ -78,50 +61,18 @@ export class UploadConvertComponent implements OnInit {
   docFile = File;
   currentFileUpload: File;
   fileToUpload: any;
-  pdfSource: string;
+  pdfSource: string = 'https://secureid.blob.core.windows.net/documents/1614585679625.pdf';
   myForm = new FormGroup({
     file: new FormControl('', [Validators.required]),
     fileSource: new FormControl('', [Validators.required])
   });
 
-  constructor(private http: HttpClient, private _uploadFileService: UploadConvertService,private matDialog:MatDialog,
+  constructor(private http: HttpClient, private _uploadFileService: UploadConvertService, private matDialog: MatDialog,
               private organizationService: OrganizationService, private router: Router) {
   }
 
   get f() {
     return this.myForm.controls;
-  }
-
-  loadPdf(event, filePath) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', './assets/abc.pdf', true);
-    xhr.responseType = 'blob';
-
-    xhr.onload = (e: any) => {
-      console.log(xhr);
-      if (xhr.status === 200) {
-        const blob = new Blob([xhr.response], {type: 'application/pdf'});
-        this.pdfSrc = URL.createObjectURL(blob);
-        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-        let imageX = (event.layerX);
-        let imageY = (event.layerY);
-        const xcoordinate = imageX / windowX;
-        const ycoordinate = imageY / windowY;
-        console.log('x = ' + xcoordinate, 'y = ' + ycoordinate);
-        console.log(event);
-        // this.loadPdf();
-        const formdata: FormData = new FormData();
-
-        formdata.append('file', blob);
-
-        this.http.post('http://localhost:8080/secured/pdf/update/' + xcoordinate + '/' + ycoordinate + '/' + this.page, formdata).subscribe(data => {
-          console.log("yesssssssssssssss");
-        });
-      }
-    };
-
-    xhr.send();
   }
 
   next() {
@@ -135,83 +86,83 @@ export class UploadConvertComponent implements OnInit {
     for (const pdfFieldElement of this.pdfFieldElements) {
       console.log(this.pdfFieldElements)
       if (pdfFieldElement.pageNum !== this.page) {
-          document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
+        document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
       }
     }
     let i = 0;
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
-          const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-          const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-          let opaqueSelected = `<option value="Opaque">Opaque</option>`;
-          let transparentSelected = `<option value="Transparent">Transparent</option>`;
-          if (pdfFieldElement.transparent) {
-            transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
-          } else {
-            opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
-          }
-          // const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
-          //   '  <option value="Opaque">Opaque</option>\n' +
-          //   '  <option value="Transparent">Transparent</option>\n' +
-          //   '</select>\n' +
-          //   `<button class="close-btn" id='close-${this.pdfFieldElements.length - 1}' aria-label="Close">\n` +
-          //   '  <span aria-hidden="true">&times;</span>\n' +
-          //   '</button></div>'
-          const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}'>
+        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
+        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
+        let opaqueSelected = `<option value="Opaque">Opaque</option>`;
+        let transparentSelected = `<option value="Transparent">Transparent</option>`;
+        if (pdfFieldElement.transparent) {
+          transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
+        } else {
+          opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
+        }
+        // const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
+        //   '  <option value="Opaque">Opaque</option>\n' +
+        //   '  <option value="Transparent">Transparent</option>\n' +
+        //   '</select>\n' +
+        //   `<button class="close-btn" id='close-${this.pdfFieldElements.length - 1}' aria-label="Close">\n` +
+        //   '  <span aria-hidden="true">&times;</span>\n' +
+        //   '</button></div>'
+        const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}'>
             ${opaqueSelected}${transparentSelected}</select>
             <button class="close-btn" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button></div>`);
 
 
-          $element[0].classList.add('drag-and-resize-div');
-          $element[0].classList.add('page' + this.page);
-          $element[0].style.position = "absolute";
-          $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
-          $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
-          $element[0].style.border = "2px solid";
-          $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
-          $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
-          if(this.pdfFieldElements[i]['isDeleted']){
-            $element[0].style.visibility = 'hidden';
+        $element[0].classList.add('drag-and-resize-div');
+        $element[0].classList.add('page' + this.page);
+        $element[0].style.position = "absolute";
+        $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
+        $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+        $element[0].style.border = "2px solid";
+        $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
+        $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
+        if (this.pdfFieldElements[i]['isDeleted']) {
+          $element[0].style.visibility = 'hidden';
 
+        }
+
+        // $element[0].textContent = pdfFieldElement.fieldName;
+
+        $element[0].setAttribute("index", i);
+
+        //
+        $('#pdfPage').append($element);
+
+        $('.close-btn').on('click', (e) => {
+          let divToRemove = e.target.closest(".drag-and-resize-div");
+          this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
+          divToRemove.style.visibility = "hidden";
+        })
+        $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
+          const index = e.target.getAttribute("index");
+          console.log("befor form update...")
+          console.log(this.pdfFieldElements[index])
+          this.updateForm(e.target, index)
+          console.log("after form update...")
+          console.log(this.pdfFieldElements[index])
+        });
+
+        $element.draggable().bind('dragstop', (e) => {
+          const index = e.target.getAttribute("index");
+          this.updateForm(e.target, index)
+        });
+
+        $('select').on('change', (e) => {
+          const index = e.target.id.split('-')[1];
+          const value = e.target.value;
+          let transparent = false;
+          if (value === 'Transparent') {
+            transparent = true;
           }
-
-          // $element[0].textContent = pdfFieldElement.fieldName;
-
-          $element[0].setAttribute("index", i);
-
-          //
-          $('#pdfPage').append($element);
-
-          $('.close-btn').on('click', (e) => {
-            let divToRemove = e.target.closest(".drag-and-resize-div");
-            this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-            divToRemove.style.visibility="hidden";
-          })
-          $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
-            const index = e.target.getAttribute("index");
-            console.log("befor form update...")
-            console.log(this.pdfFieldElements[index])
-            this.updateForm(e.target, index)
-            console.log("after form update...")
-            console.log(this.pdfFieldElements[index])
-          });
-
-          $element.draggable().bind('dragstop', (e) => {
-            const index = e.target.getAttribute("index");
-            this.updateForm(e.target, index)
-          });
-
-          $('select').on('change', (e) => {
-            const index = e.target.id.split('-')[1];
-            const value = e.target.value;
-            let transparent = false;
-            if (value === 'Transparent') {
-              transparent = true;
-            }
-            this.updateTransparency(index, transparent);
-          });
+          this.updateTransparency(index, transparent);
+        });
 
       }
       i++;
@@ -226,12 +177,10 @@ export class UploadConvertComponent implements OnInit {
     }
   }
 
-  getVal(event) {
-    console.log(event)
-  }
-  resetDragPosition($event){
+  resetDragPosition($event) {
     this.dragPosition = {x: 0, y: 0};
   }
+
   checkIfDropExistsInPdfView(boundingClientRect: any) {
     if (
       boundingClientRect.top >= 0 &&
@@ -280,6 +229,9 @@ export class UploadConvertComponent implements OnInit {
       "transparent": false
     };
     this.pdfFieldElements.push(pdfFieldElement);
+
+
+    ////////////////////////////////////
     const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
       '  <option value="Opaque">Opaque</option>\n' +
       '  <option value="Transparent">Transparent</option>\n' +
@@ -298,75 +250,37 @@ export class UploadConvertComponent implements OnInit {
     $element[0].style.border = "2px solid";
     $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
     $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
-
-    // $element[0].textContent = item.title;
     $element[0].setAttribute("index", this.pdfFieldElements.length - 1);
 
     $('#pdfPage').append($element);
-    let closeButton = document.getElementsByClassName("close");
-
-    $('.close-btn').on('click', (e) => {
-      console.log("drop wala")
-      let divToRemove = e.target.closest(".drag-and-resize-div");
-      this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-      divToRemove.style.visibility="hidden";
-      // divToRemove.setAttribute("visibility","hidden");
-    })
-
-    //   console.log(this.getAttribute("index"));
-    // });
-
-    $element.draggable().bind('dragstop', (e) => {
-      const index = e.target.getAttribute("index");
-      this.updateForm(e.target, index)
-    });
-    $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
-      const index = e.target.getAttribute("index");
-      console.log("befor form update...")
-      console.log(this.pdfFieldElements[index])
-      this.updateForm(e.target, index)
-      console.log("after form update...")
-      console.log(this.pdfFieldElements[index])
-    });
-    $('select').on('change', (e) => {
-      const index = e.target.id.split('-')[1];
-      console.log(index);
-      if(!index){
-        return;
-      }
-      const value = e.target.value;
-      let transparent = false;
-      if (value === 'Transparent') {
-        transparent = true;
-      }
-      this.updateTransparency(index, transparent);
-    });
+    this.closeButton();
+    this.draggableDiv($element);
+    this.resizableDiv($element);
+    this.selectOnChange();
   };
 
   updateTransparency(index, transparent) {
     this.pdfFieldElements[index]['transparent'] = transparent;
   }
 
-  openOrganizationModal(){
+  openOrganizationModal() {
     const dialogRef = this.matDialog.open(ModalOrganizationComponent, {
       width: '650px',
       height: '550px',
     });
-    dialogRef.afterClosed().subscribe(data=>{
-      if(data != undefined) this.organizationFields.push(data);
+    dialogRef.afterClosed().subscribe(data => {
+      if (data != undefined) this.organizationFields.push(data);
     })
-}
-  updateForm(event, index) {
-    // const elementDragDiv = document.getElementById('box' + i) as HTMLElement;
+  }
 
-    // let element = event.source.getRootElement();
+  updateForm(event, index) {
     let boundingClientRect = event.getBoundingClientRect();
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
     if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
       event.remove();
-      const pdfFieldElementCopy=this.pdfFieldElements[index];
+      const pdfFieldElementCopy = this.pdfFieldElements[index];
       let opaqueSelected = `<option value="Opaque">Opaque</option>`;
       let transparentSelected = `<option value="Transparent">Transparent</option>`;
       if (pdfFieldElementCopy.transparent) {
@@ -396,7 +310,7 @@ export class UploadConvertComponent implements OnInit {
       $('.close-btn').on('click', (e) => {
         let divToRemove = e.target.closest(".drag-and-resize-div");
         this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-        divToRemove.style.visibility="hidden";
+        divToRemove.style.visibility = "hidden";
       })
       $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
         const index = e.target.getAttribute("index");
@@ -438,102 +352,60 @@ export class UploadConvertComponent implements OnInit {
     this.pdfFieldElements[index] = pdfFieldElement;
   }
 
+  closeButton() {
+    $('.close-btn').on('click', (e) => {
+      const divToRemove = e.target.closest(".drag-and-resize-div");
+      this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
+      divToRemove.style.visibility = "hidden";
+    });
+  }
+
+  selectOnChange() {
+    $('select').on('change', (e) => {
+      const index = e.target.id.split('-')[1];
+      console.log(index);
+      if (!index) {
+        return;
+      }
+      const value = e.target.value;
+      let transparent = false;
+      if (value === 'Transparent') {
+        transparent = true;
+      }
+      this.updateTransparency(index, transparent);
+    });
+
+  }
+
+  resizableDiv($element: any) {
+    $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
+      const index = e.target.getAttribute("index");
+      this.updateForm(e.target, index)
+    });
+  }
+
+  draggableDiv($element: any) {
+    $element.draggable().bind('dragstop', (e) => {
+      const index = e.target.getAttribute("index");
+      this.updateForm(e.target, index)
+    });
+  }
+
   onsubmit() {
     this.processing = true;
-    // const xhr = new XMLHttpRequest();
-    // xhr.open('GET', './assets/abc.pdf', true);
-    // xhr.responseType = 'blob';
-    //
-    // xhr.onload = (e: any) => {
-    //   console.log(xhr);
-    //   if (xhr.status === 200) {
-    //     const blob = new Blob([xhr.response], {type: 'application/pdf'});
-    //     this.pdfSrc = URL.createObjectURL(blob);
-    //     console.log(event);
-    //     // this.loadPdf();
-    //     const formdata: FormData = new FormData();
-    //
-    //     formdata.append('file', this.fileToUpload);
-    //     formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
-    //     this.http.post('http://localhost:8080/api/securedid/secured/pdf/update', formdata).subscribe(data => {
-    //       console.log("yesssssssssssssss");
-    //     });
-    //   }
-    // };
-    //
-    // xhr.send();
-    // // $( "#here" ).refresh();
     const formdata: FormData = new FormData();
-
     formdata.append('file', this.fileToUpload);
-    this.pdfFieldElements = this.pdfFieldElements.filter(function (pdfElem) {
+    this.pdfFieldElements = this.pdfFieldElements.filter((pdfElem) => {
       if (!pdfElem.isDeleted) {
         return delete pdfElem['isDeleted'];
       }
     });
-    console.log(this.pdfFieldElements)
-
     formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
-    this.http.post('http://localhost:8080/api/securedid/secured/pdf/update/' + $('#orgName').val() + '/' + $('#document-type').val(), formdata).subscribe(data => {
+    this.http.post(`${environment.baseUrl}api/securedid/secured/pdf/update/${$('#orgName').val()}/${$('#document-type').val()}`, formdata).subscribe(data => {
       this.processing = false;
       alert(data["response"])
       location.reload();
-      console.log("yesssssssssssssss");
     });
-  }
-
-
-  onDragEnded(event) {
-
-    console.log(event);
-    const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-    const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-    let element = event.source.getRootElement();
-    let boundingClientRect = element.getBoundingClientRect();
-    console.log("-------------");
-    console.log(boundingClientRect);
-    const xcoordinate = boundingClientRect.x / windowX;
-    const ycoordinate = (boundingClientRect.y + boundingClientRect.height) / windowY
-    const heightCoordinate = boundingClientRect.height / windowY;
-    const widthCoordinate = boundingClientRect.width / windowX;
-
-    console.log('x: ' + (boundingClientRect.x / windowX), 'y: ' + (boundingClientRect.y / windowY));
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', './assets/abc.pdf', true);
-    xhr.responseType = 'blob';
-
-    xhr.onload = (e: any) => {
-      console.log(xhr);
-      if (xhr.status === 200) {
-        const blob = new Blob([xhr.response], {type: 'application/pdf'});
-        this.pdfSrc = URL.createObjectURL(blob);
-        console.log('x = ' + xcoordinate, 'y = ' + ycoordinate);
-        console.log(event);
-        // this.loadPdf();
-        const formdata: FormData = new FormData();
-
-        formdata.append('file', blob);
-
-        this.http.post('http://localhost:8080/secured/pdf/update/' + xcoordinate + '/' + ycoordinate + '/' + widthCoordinate + '/' + heightCoordinate + '/' + this.page, formdata).subscribe(data => {
-          console.log("yesssssssssssssss");
-        });
-      }
-    };
-
-    xhr.send();
-  }
-
-  getPosition(el) {
-    console.log("djsadjisajdisaij")
-    console.log(el)
-    let x = 0;
-    let y = 0;
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-      x += el.offsetLeft - el.scrollLeft;
-      y += el.offsetTop + el.scrollTop;
-      el = el.offsetParent;
-    }
-    return {top: y, left: x};
   }
 
   /**
@@ -558,20 +430,6 @@ export class UploadConvertComponent implements OnInit {
   /**
    * Render PDF preview on selecting file
    */
-  onFileSelected() {
-    const $pdf: any = document.querySelector('#file');
-
-    if (typeof FileReader !== 'undefined') {
-      const reader = new FileReader();
-
-      reader.onload = (e: any) => {
-        this.pdfSrc = e.target.result;
-      };
-
-      reader.readAsArrayBuffer($pdf.files[0]);
-    }
-  }
-
   /**
    * Get pdf information after it's loaded
    * @param pdf pdf document proxy
@@ -670,32 +528,6 @@ export class UploadConvertComponent implements OnInit {
     console.log('(page-rendered)', e);
   }
 
-  check(event: any) {
-    console.log(event);
-  }
-
-  okay(event: any) {
-    var data = document.getElementById('textLayer');  //Id of the table
-    // html2canvas(data).then(canvas => {
-    //   // Few necessary setting options
-    //   let imgWidth = 208;
-    //   let pageHeight = 295;
-    //   let imgHeight = canvas.height * imgWidth / canvas.width;
-    //   let heightLeft = imgHeight;
-    //
-    //   const contentDataURL = canvas.toDataURL('image/png')
-    //   let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF
-    //   let position = 0;
-    //   pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-    //   pdf.save('./assets/abc.pdf'); // Generated PDF
-    // });
-    // this.loadPdf(event, "./assets/abc.pdf");
-    // let element = event.source.getRootElement();
-    // let boundingClientRect = element.getBoundingClientRect();
-    console.log(event)
-
-  }
-
   searchQueryChanged(newQuery: string) {
     if (newQuery !== this.pdfQuery) {
       this.pdfQuery = newQuery;
@@ -786,17 +618,17 @@ export class UploadConvertComponent implements OnInit {
 
   ngOnInit(): void {
     this.f;
-    this.http.get<{ title: string, type: string }[]>("http://localhost:8080/getProperties?documentType=IdCard")
+    this.http.get<{ title: string, type: string }[]>(`${environment.baseUrl}getProperties?documentType=IdCard`)
       .subscribe(data => {
           this.fields = data;
         }
       );
 
     this.organizationService.getOrganizations().subscribe(data => {
-          data["selected"] = false;
-          this.organizationFields = data;
-        }
-      );
+        data["selected"] = false;
+        this.organizationFields = data;
+      }
+    );
   }
 
   reload() {
@@ -807,7 +639,6 @@ export class UploadConvertComponent implements OnInit {
       setTimeout(() => {                           //<<<---using ()=> syntax
         this.resizeend();
       }, this.delta);
-      // setTimeout(this.resizeend, this.delta);
     }
   }
 
@@ -838,44 +669,29 @@ export class UploadConvertComponent implements OnInit {
         } else {
           opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
         }
-        // const $element = $(`<div>${item.title}<select name="transparencyType" id='transparencyType-${this.pdfFieldElements.length - 1}'>\n` +
-        //   '  <option value="Opaque">Opaque</option>\n' +
-        //   '  <option value="Transparent">Transparent</option>\n' +
-        //   '</select>\n' +
-        //   `<button class="close-btn" id='close-${this.pdfFieldElements.length - 1}' aria-label="Close">\n` +
-        //   '  <span aria-hidden="true">&times;</span>\n' +
-        //   '</button></div>'
         const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}'>
             ${opaqueSelected}${transparentSelected}</select>
             <button class="close-btn" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button></div>`);
-
-
         $element[0].classList.add('drag-and-resize-div');
         $element[0].classList.add('page' + this.page);
-        $element[0].style.position='absolute';
+        $element[0].style.position = 'absolute';
         $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
         $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
         $element[0].style.border = "2px solid";
         $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
         $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
-        if(this.pdfFieldElements[i]['isDeleted']){
+        if (this.pdfFieldElements[i]['isDeleted']) {
           $element[0].style.visibility = 'hidden';
 
         }
-
-        // $element[0].textContent = pdfFieldElement.fieldName;
-
         $element[0].setAttribute("index", i);
-
-        //
         $('#pdfPage').append($element);
-
         $('.close-btn').on('click', (e) => {
           let divToRemove = e.target.closest(".drag-and-resize-div");
           this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-          divToRemove.style.visibility="hidden";
+          divToRemove.style.visibility = "hidden";
         })
         $element.resizable({handles: 'all'}).bind('resizestop', (e) => {
           const index = e.target.getAttribute("index");
@@ -906,7 +722,7 @@ export class UploadConvertComponent implements OnInit {
     }
   }
 
-  logout(){
+  logout() {
     localStorage.removeItem("token");
     this.router.navigate(["/login"]);
   }
