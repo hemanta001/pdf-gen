@@ -182,11 +182,6 @@ export class UploadConvertComponent implements OnInit {
     } else {
       opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
     }
-    // const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${index}'>
-    //         ${opaqueSelected}${transparentSelected}</select>
-    //         <button class="close-btn" aria-label="Close">
-    //         <span aria-hidden="true">&times;</span>
-    //         </button></div>`);
     const $element = $(`<div class="row dropped-field">
        <div class="col-10">
          <div class="row">
