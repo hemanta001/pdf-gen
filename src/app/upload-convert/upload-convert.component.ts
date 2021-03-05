@@ -83,24 +83,14 @@ export class UploadConvertComponent implements OnInit {
   }
 
   divAdd() {
-    for (const pdfFieldElement of this.pdfFieldElements) {
-      if (pdfFieldElement.pageNum !== this.page) {
-        document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
-      }
-    }
     let i = 0;
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
-        const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
-        const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
-        const $element = this.getDroppedDiv(pdfFieldElement, windowX, windowY, i);
-
-        $('#pdfPage').append($element);
-
-        this.closeButton();
-        this.draggableDiv($element);
-        this.resizableDiv($element);
-        this.selectOnChange();
+        const windowX = this.getWindowX();
+        const windowY = this.getWindowY();
+        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
+      } else {
+        document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
       }
       i++;
     }
