@@ -1,2 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @import '../node_modules/@angular/material/prebuilt-themes/indigo-pink.css';
+.hide-it{
+  visibility: hidden;
+}
+
+.dropped-field:hover .hide-it{
+  visibility: visible;
+}

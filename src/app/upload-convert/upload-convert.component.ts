@@ -182,11 +182,29 @@ export class UploadConvertComponent implements OnInit {
     } else {
       opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
     }
-    const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${index}'>
-            ${opaqueSelected}${transparentSelected}</select>
-            <button class="close-btn" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button></div>`);
+    // const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${index}'>
+    //         ${opaqueSelected}${transparentSelected}</select>
+    //         <button class="close-btn" aria-label="Close">
+    //         <span aria-hidden="true">&times;</span>
+    //         </button></div>`);
+    const $element = $(`<div class="row dropped-field">
+       <div class="col-10">
+         <div class="row">
+           <div class="col-7">
+             ${pdfFieldElement.fieldName}
+           </div>
+           <div class="col-5 hide-it">
+             <select name="transparencyType" id='transparencyType-${index}'>
+               ${opaqueSelected}${transparentSelected}
+             </select>
+           </div>
+         </div>
+       </div>
+       <div class="col-2 close-btn h1 text-danger font-weight-bold hide-it"
+            style="cursor: pointer; margin-left: -15px; margin-top: -15px">
+         &times;
+       </div>
+     </div>`);
     $element[0].classList.add('drag-and-resize-div');
     $element[0].classList.add('page' + this.page);
     $element[0].style.position = 'absolute';
@@ -241,6 +259,7 @@ export class UploadConvertComponent implements OnInit {
       "height": heightCoordinate,
       "width": widthCoordinate,
       "pageNum": this.page,
+      "transparent":this.pdfFieldElements[index].transparent,
       "fieldName": this.pdfFieldElements[index].fieldName
     };
   }
@@ -562,11 +581,24 @@ export class UploadConvertComponent implements OnInit {
         } else {
           opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
         }
-        const $element = $(`<div>${pdfFieldElement.fieldName}<select name="transparencyType" id='transparencyType-${i}'>
-            ${opaqueSelected}${transparentSelected}</select>
-            <button class="close-btn" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button></div>`);
+        const $element = $(`<div class="row dropped-field">
+       <div class="col-10">
+         <div class="row">
+           <div class="col-7">
+             ${pdfFieldElement.fieldName}
+           </div>
+           <div class="col-5 hide-it">
+             <select name="transparencyType" id='transparencyType-${i}'>
+               ${opaqueSelected}${transparentSelected}
+             </select>
+           </div>
+         </div>
+       </div>
+       <div class="col-2 close-btn h1 text-danger font-weight-bold hide-it"
+            style="cursor: pointer; margin-left: -15px; margin-top: -15px">
+         &times;
+       </div>
+     </div>`);
         $element[0].classList.add('drag-and-resize-div');
         $element[0].classList.add('page' + this.page);
         $element[0].style.position = 'absolute';
