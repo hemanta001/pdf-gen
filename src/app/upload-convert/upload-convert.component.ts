@@ -135,8 +135,8 @@ export class UploadConvertComponent implements OnInit {
     const windowX = this.getWindowX();
     const windowY = this.getWindowY();
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
-    const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item.title);
-    this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
+    const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item);
+    this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY, item.shape);
   };
 
   getWindowX() {
@@ -147,7 +147,7 @@ export class UploadConvertComponent implements OnInit {
     return (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
   }
 
-  setPdfFieldElements(boundingClientRect: any, windowX: any, windowY: any, scrollTop: any, title: any) {
+  setPdfFieldElements(boundingClientRect: any, windowX: any, windowY: any, scrollTop: any, item: any) {
     const xcoordinate = boundingClientRect.x / windowX;
     const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY;
     const heightCoordinate = boundingClientRect.height / windowY;
@@ -159,14 +159,36 @@ export class UploadConvertComponent implements OnInit {
       "width": widthCoordinate,
       "isDeleted": false,
       "pageNum": this.page,
-      "fieldName": title,
+      "fieldName": item.title,
+      "fieldType":item.type,
       "transparent": false
     };
     this.pdfFieldElements.push(pdfFieldElement);
     return pdfFieldElement;
   }
 
-  getDroppedDiv(pdfFieldElement: any, windowX: any, windowY: any, index: any) {
+  getDroppedDiv(pdfFieldElement: any, windowX: any, windowY: any, index: any, shape?: any) {
+    if (shape === 'circle') {
+      const $elementCircleDiv = $(`<div></div>`);
+      // $elementCircleDiv[0].classList.add('page' + this.page);
+      // $elementCircleDiv[0].style.position = 'absolute';
+      $elementCircleDiv[0].style.marginLeft = '200px';
+      $elementCircleDiv[0].style.marginTop = '200px';
+
+      // $elementCircleDiv[0].style.height = (pdfFieldElement.height * windowY) + 'px';
+      $elementCircleDiv[0].style.width = '200px';
+      $elementCircleDiv[0].style.height = '200px';
+      $elementCircleDiv[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
+      $elementCircleDiv[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+      $elementCircleDiv[0].style.backgroundColor = '#bbb';
+
+      $elementCircleDiv[0].style.borderRadius = '50%';
+      $elementCircleDiv[0].style.display = 'inline-block';
+      $elementCircleDiv[0].style.position = 'absolute';
+      $elementCircleDiv[0].style.height = (pdfFieldElement.height * windowY) + 'px';
+      $elementCircleDiv[0].style.width = (pdfFieldElement.width * windowX) + 'px';
+      return $elementCircleDiv;
+    }
     let opaqueSelected = `<option value="Opaque">Opaque</option>`;
     let transparentSelected = `<option value="Transparent">Transparent</option>`;
     if (pdfFieldElement.transparent) {
@@ -561,12 +583,12 @@ export class UploadConvertComponent implements OnInit {
     }
   }
 
-  insertFieldToPdf(pdfFieldElement: any, index: any, windowX: any, windowY: any) {
-    const $element = this.getDroppedDiv(pdfFieldElement, windowX, windowY, index);
+  insertFieldToPdf(pdfFieldElement: any, index: any, windowX: any, windowY: any, shape?: any) {
+    const $element = this.getDroppedDiv(pdfFieldElement, windowX, windowY, index, shape);
     $('#pdfPage').append($element);
-    this.closeButton();
     this.draggableDiv($element);
     this.resizableDiv($element);
+    this.closeButton();
     this.selectOnChange();
   }
 

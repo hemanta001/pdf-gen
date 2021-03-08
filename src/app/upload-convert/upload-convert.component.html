@@ -83,11 +83,14 @@
         (cdkDragEnded)="drop($event,list,i)"
         [cdkDragFreeDragPosition]="dragPosition"
         (cdkDragStarted)="resetDragPosition($event)"
-        class="text-center text-white mt-1 "
+        class="text-center text-white mt-1 " [ngClass]="list.type==='image'?'dot':''"
         style="background-color: #2C6BB6;"
       >
         {{list.title}}
       </div>
+<!--      <span class="dot" cdkDrag (cdkDragEnded)="drop($event,{title:'testCirlce'},null,'circle')"-->
+<!--            [cdkDragFreeDragPosition]="dragPosition"-->
+<!--            (cdkDragStarted)="resetDragPosition($event)"></span>-->
 
       <div class="row" hidden>
         <div class="col-10">
