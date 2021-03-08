@@ -62,6 +62,7 @@
     "jquery-ui": "^1.12.1",
     "jquery-ui-dist": "^1.12.1",
     "jspdf": "^2.2.0",
+    "mydatepicker": "^9.0.2",
     "ng2-pdfjs-viewer": "^5.0.7",
     "pdfjs-dist": "^2.5.207",
     "save": "^2.4.0",
