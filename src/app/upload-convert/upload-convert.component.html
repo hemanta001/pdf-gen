@@ -92,13 +92,13 @@
 <!--            [cdkDragFreeDragPosition]="dragPosition"-->
 <!--            (cdkDragStarted)="resetDragPosition($event)"></span>-->
 
-      <div class="row" hidden>
+      <div class="row dropped-field" hidden>
         <div class="col-10">
           <div class="row" style="border: 2px solid black;">
             <div class="col-7">
               title
             </div>
-            <div class="col-5">
+            <div class="col-5 hide-it">
               <select class="border-0">
                 <option>option 1</option>
                 <option>option 2</option>
@@ -106,7 +106,7 @@
             </div>
           </div>
         </div>
-        <div class="col-2 h1 text-danger font-weight-bold"
+        <div class="col-2 h1 text-danger font-weight-bold hide-it"
              style="cursor: pointer; margin-left: -15px; margin-top: -15px">
           &times;
         </div>

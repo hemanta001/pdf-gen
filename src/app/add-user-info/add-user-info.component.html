@@ -1,22 +1,73 @@
 <div class="container mt-4 pt-2 pl-2">
-  <h3>Fill the form below.</h3>
-  <hr/>
-  <form [formGroup]="userInfoForm" (ngSubmit)="submitUserInfo()">
-    <div class="row">
-      <div class="col-4">
-        <div class="form-group">
-          <label for="fullName">Full Name</label>
-          <input formControlName="fullName" type="text" class="form-control" id="fullName">
+    <h3>Fill the form below.</h3>
+    <hr/>
+    <form [formGroup]="idCardForm">
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="profilePicture">profilePicture</label>
+                    <input type="file" class="form-control" id="profilePicture" (change)="onFileSelect($event)">
+                    <button type="button" class="btn btn-primary" (click)="onUploadFile()">Upload</button>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input formControlName="fullName" type="text" class="form-control" id="fullName">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="dateOfBirth">Date of birth</label>
+                    <my-date-picker [options]="myDatePickerOptions"
+                                    formControlName="dateOfBirth" id="dateOfBirth"></my-date-picker>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input formControlName="email" type="text" class="form-control" id="email">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="website">Website</label>
+                    <input formControlName="website" type="text" class="form-control" id="website">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="position">position</label>
+                    <input formControlName="position" type="text" class="form-control" id="position">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="expiryDate">expiryDate</label>
+                    <my-date-picker [options]="myDatePickerOptions"
+                                    formControlName="expiryDate" id="expiryDate"></my-date-picker>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="employeeNumber">employeeNumber</label>
+                    <input formControlName="employeeNumber" type="text" class="form-control" id="employeeNumber">
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="gender">gender</label>
+                    <select class="form-control" formControlName="gender" id="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-4">
-        <div class="form-group">
-          <label for="phoneNo">Phone Number</label>
-          <input formControlName="phoneNo" type="text" class="form-control" id="phoneNo">
-        </div>
-      </div>
-    </div>
-    <button class="btn btn-success mb-4" type="submit">Submit</button>
-  </form>
+        <button [disabled]="!idCardForm.valid" class="btn btn-success mb-4" type="submit" (click)="submitIdCardForm()">
+            Submit
+        </button>
+    </form>
 </div>
 

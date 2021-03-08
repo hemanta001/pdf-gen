@@ -14,45 +14,51 @@ import {PdfDownloadComponent} from "./pdfDownload/pdf-download.component";
 import {RouterModule} from "@angular/router";
 import {AddUserInfoComponent} from './add-user-info/add-user-info.component';
 import {ModalOrganizationComponent} from "./modals/modal-organization/modal-organization.component";
-import {OrganizationService} from "./organization/service/organization.service";
-import { LoginComponent } from './auth/login/login.component';
+import {LoginComponent} from './auth/login/login.component';
 import {AuthGuard} from "./auth/auth.guard";
+import {NgxsModule} from '@ngxs/store';
+import {IdCardState} from './add-user-info/store/id-card.state';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {MyDatePickerModule} from 'mydatepicker';
 
 @NgModule({
-  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent, LoginComponent],
-  imports: [
-    BrowserModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    FormsModule,
-    DragDropModule,
-    NoopAnimationsModule,
-    RouterModule.forRoot([{
-      path: '',
-      component: UploadConvertComponent,
-      canActivate: [AuthGuard]
-    },
-      {
-        path: 'pdf-download',
-        component: PdfDownloadComponent
-      },
-      {
-        path: 'add-info',
-        component: AddUserInfoComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'login',
-        component: LoginComponent
-      }]),
-
-    DemoMaterialModule,
-    AngularResizedEventModule,
-    PdfViewerModule
-
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent, LoginComponent],
+    imports: [
+        BrowserModule,
+        NgxsModule.forRoot([
+            IdCardState
+        ]),
+        MyDatePickerModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        FormsModule,
+        DragDropModule,
+        NoopAnimationsModule,
+        RouterModule.forRoot([{
+            path: '',
+            component: UploadConvertComponent,
+            canActivate: [AuthGuard]
+        },
+            {
+                path: 'pdf-download',
+                component: PdfDownloadComponent
+            },
+            {
+                path: 'add-info',
+                component: AddUserInfoComponent,
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'login',
+                component: LoginComponent
+            }]),
+        DemoMaterialModule,
+        AngularResizedEventModule,
+        PdfViewerModule,
+        NgbModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }
