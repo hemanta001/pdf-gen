@@ -20,10 +20,12 @@ import {NgxsModule} from '@ngxs/store';
 import {IdCardState} from './add-user-info/store/id-card.state';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MyDatePickerModule} from 'mydatepicker';
+import {ImageCropperModule} from "ngx-image-cropper";
 
 @NgModule({
     declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent, LoginComponent],
     imports: [
+      ImageCropperModule,
         BrowserModule,
         NgxsModule.forRoot([
             IdCardState
