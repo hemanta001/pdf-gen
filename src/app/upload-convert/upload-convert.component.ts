@@ -88,7 +88,7 @@ export class UploadConvertComponent implements OnInit {
       if (pdfFieldElement.pageNum === this.page) {
         const windowX = this.getWindowX();
         const windowY = this.getWindowY();
-        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
+        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY, pdfFieldElement.shape);
       } else {
         document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
       }
@@ -310,8 +310,12 @@ export class UploadConvertComponent implements OnInit {
 
   }
 
-  resizableDiv($element: any) {
-    $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
+  resizableDiv($element: any, shape: string) {
+    $element.resizable({
+      handles: 'all',
+      cancel: '.ui-dialog-content',
+      aspectRatio: (((shape === 'circle') || (shape === 'square')) ? 4 / 4 : false)
+    }).bind('resizestop', (e) => {
       const index = e.target.getAttribute("index");
       console.log("before")
       console.log(this.pdfFieldElements[index])
@@ -600,7 +604,7 @@ export class UploadConvertComponent implements OnInit {
     const windowY = this.getWindowY();
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
-        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
+        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY, pdfFieldElement.shape);
       }
       i++;
     }
@@ -610,7 +614,7 @@ export class UploadConvertComponent implements OnInit {
     const $element = this.getDroppedDiv(pdfFieldElement, windowX, windowY, index, shape);
     $('#pdfPage').append($element);
     this.draggableDiv($element);
-    this.resizableDiv($element);
+    this.resizableDiv($element, shape);
     this.closeButton();
     this.selectOnChange();
   }
