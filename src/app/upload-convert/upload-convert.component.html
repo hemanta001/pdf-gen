@@ -39,17 +39,22 @@
       <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
         <h4 class="text-center">FIELDS</h4>
       </div>
-      <div
-        id="box{{i}}"
-        *ngFor="let list of fields;let i=index;"
-        cdkDrag
-        (cdkDragEnded)="drop($event,list,i)"
-        [cdkDragFreeDragPosition]="dragPosition"
-        (cdkDragStarted)="resetDragPosition($event)"
-        class="text-center text-white mt-1 " [ngClass]="list.type==='image'?'dot':''"
-        style="background-color: #2C6BB6;"
-      >
+      <div *ngFor="let list of fields;let i=index;">
+        <div id="box{{i}}"
+             cdkDrag
+             (cdkDragEnded)="drop($event,list,i)"
+             [cdkDragFreeDragPosition]="dragPosition"
+             (cdkDragStarted)="resetDragPosition($event)"
+             class="text-center text-white mt-1 " [ngClass]="(list.shape==='circle')?'dot':(list.shape==='rectangle')?'rectangle':(list.shape==='square')?'square':''"
+             style="background-color: #2C6BB6;">
         {{list.title}}
+        </div>
+          <select name="selectShape" id="selectShape" (change)="setFieldTypeAndShape(i,selectShape.value)" #selectShape>
+            <option value="text" selected>Text</option>
+            <option value="rectangle">Image-Rectangle</option>
+            <option value="square">Image-Square</option>
+            <option value="circle">Image-Circle</option>
+          </select>
       </div>
 <!--      <span class="dot" cdkDrag (cdkDragEnded)="drop($event,{title:'testCirlce'},null,'circle')"-->
 <!--            [cdkDragFreeDragPosition]="dragPosition"-->
