@@ -28,6 +28,7 @@ export class UploadConvertComponent implements OnInit {
   rtime: any;
   timeout = false;
   delta = 200;
+  multipartImage = [];
   pdfFieldElements: any = [];
   dragPosition = {x: 0, y: 0};
   name = 'Angular';
@@ -493,6 +494,7 @@ export class UploadConvertComponent implements OnInit {
       if (event.target.files && event.target.files[0]) {
         var filesAmount = event.target.files.length;
         for (let i = 0; i < filesAmount; i++) {
+          this.multipartImage.push(event.target.files[i]);
           var reader = new FileReader();
 
           reader.onload = (event: any) => {
@@ -518,33 +520,26 @@ export class UploadConvertComponent implements OnInit {
   }
 
   submit() {
-    if (this.images.length > 0) {
-      let doc = new jsPDF('p', 'mm', 'a4', true);
-      for (var i = 0; i < this.images.length; i++) {
-        let imageData = this.getBase64Image(document.getElementById('img' + i));
-        doc.addImage(imageData, 'JPEG', 10, 10, 190, 270, undefined, 'FAST');
-        if (i !== this.images.length - 1) {
-          doc.addPage();
+    const formData = new FormData();
+
+    this.multipartImage.forEach(file => {
+      formData.append('files', file);
+    });
+
+
+    this._uploadFileService
+      .pushFileToStorage(formData)
+      .subscribe(event => {
+        console.log(event);
+        if (event instanceof HttpResponse) {
+          this.pdfSource = (event.body as string);
+
+          document.getElementById('formPdf').setAttribute('hidden', 'hidden');
+
+          document.getElementById('pdfViewer').removeAttribute('hidden');
         }
-      }
-      this.fileToUpload = doc.output('blob');
-      // doc.save('Test.pdf');
-    }
-    if (this.fileToUpload !== null) {
-      this._uploadFileService
-        .pushFileToStorage(this.fileToUpload)
-        .subscribe(event => {
-          console.log(event);
-          if (event instanceof HttpResponse) {
-            this.pdfSource = (event.body as string);
-
-            document.getElementById('formPdf').setAttribute('hidden', 'hidden');
-
-            document.getElementById('pdfViewer').removeAttribute('hidden');
-          }
-        });
-      console.log('file submit');
-    }
+      });
+    console.log('file submit');
   }
 
   getBase64Image(img) {
