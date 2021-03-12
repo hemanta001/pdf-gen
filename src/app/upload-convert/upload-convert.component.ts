@@ -490,7 +490,7 @@ export class UploadConvertComponent implements OnInit {
   onFileChange(event) {
     const target = event.target as HTMLInputElement;
     this.currentFileUpload = (target.files as FileList)[0];
-    if (this.currentFileUpload.type.match(/image\/*/) != null) {
+    // if (this.currentFileUpload.type.match(/image\/*/) != null) {
       if (event.target.files && event.target.files[0]) {
         var filesAmount = event.target.files.length;
         for (let i = 0; i < filesAmount; i++) {
@@ -508,15 +508,16 @@ export class UploadConvertComponent implements OnInit {
           reader.readAsDataURL(event.target.files[i]);
         }
       }
-    } else {
-      this.docFile = event.target.files[0];
-      if (event.target.files[0].type === 'application/pdf') {
-        this.fileToUpload = event.target.files[0];
-      } else {
-        console.log('aru ta paidaina');
-      }
-      console.log(this.docFile);
-    }
+    // }
+    // else {
+    //   this.docFile = event.target.files[0];
+    //   if (event.target.files[0].type === 'application/pdf') {
+    //     this.fileToUpload = event.target.files[0];
+    //   } else {
+    //     console.log('aru ta paidaina');
+    //   }
+    //   console.log(this.docFile);
+    // }
   }
 
   submit() {
