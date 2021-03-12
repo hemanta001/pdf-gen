@@ -338,7 +338,7 @@ export class UploadConvertComponent implements OnInit {
   onsubmit() {
     this.processing = true;
     const formdata: FormData = new FormData();
-    formdata.append('file', this.fileToUpload);
+    formdata.append('file', this.pdfSource);
     this.pdfFieldElements = this.pdfFieldElements.filter((pdfElem) => {
       if (!pdfElem.isDeleted) {
         return delete pdfElem['isDeleted'];
