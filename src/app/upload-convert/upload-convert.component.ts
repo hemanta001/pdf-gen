@@ -44,31 +44,31 @@ export class UploadConvertComponent implements OnInit {
     },
     {
       option: 'HELVETICA_BOLD',
-      value: 'HelvBold'
+      value: 'HeBo'
     },
     {
       option: 'HELVETICA_OBLIQUE',
-      value: 'HelvOblique'
+      value: 'HeOb'
     },
     {
       option: 'HELVETICA_BOLD_OBLIQUE',
-      value: 'HelvBoldOblique'
+      value: 'HeBO'
     },
     {
       option: 'TIMES_ROMAN',
-      value: 'TimesRoman'
+      value: 'TiRo'
     },
     {
       option: 'TIMES_BOLD',
-      value: 'TimesBold'
+      value: 'TiBo'
     },
     {
       option: 'TIMES_ITALIC',
-      value: 'TimesItalic'
+      value: 'TiIt'
     },
     {
       option: 'TIMES_BOLD_ITALIC',
-      value: 'TimesBoldItalic'
+      value: 'TiBI'
     },
   ];
   currentlySelectedPdfFieldIndex = 0;
@@ -167,7 +167,11 @@ export class UploadConvertComponent implements OnInit {
     if (fieldProperies.shape === 'circle' || fieldProperies.shape === 'square') {
       fieldProperies.height = fieldProperies.width;
     }
-    fieldProperies.transparent = fieldProperies.transparentOrOpaque === 'Transparent';
+    if (fieldProperies.transparentOrOpaque === 'Transparent') {
+      fieldProperies.transparent = true;
+    } else {
+      fieldProperies.transparent = false;
+    }
     const windowX = this.getWindowX();
     const windowY = this.getWindowY();
     this.pdfFieldElements[this.currentlySelectedPdfFieldIndex] = {
@@ -184,7 +188,7 @@ export class UploadConvertComponent implements OnInit {
       "fontType": fieldProperies.fontType,
       "fontSize": fieldProperies.fontSize
     };
-    document.getElementsByClassName("page" + this.pdfFieldElements[this.currentlySelectedPdfFieldIndex].pageNum)[0].remove();
+    document.getElementById('pdfFieldElement-' + this.currentlySelectedPdfFieldIndex).remove();
     this.insertFieldToPdf(this.pdfFieldElements[this.currentlySelectedPdfFieldIndex], this.currentlySelectedPdfFieldIndex, windowX, windowY, this.pdfFieldElements[this.currentlySelectedPdfFieldIndex].shape);
   }
 
@@ -272,6 +276,8 @@ export class UploadConvertComponent implements OnInit {
     $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
     $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
     $element[0].setAttribute("index", index);
+    $element[0].setAttribute("id", 'pdfFieldElement-' + index);
+
     if (pdfFieldElement['isDeleted']) {
       $element[0].style.visibility = 'hidden';
     }
