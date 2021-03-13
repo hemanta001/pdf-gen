@@ -393,19 +393,9 @@ export class UploadConvertComponent implements OnInit {
     });
   }
 
-  selectOnChange() {
-    $('select').on('change', (e) => {
-      const index = e.target.id.split('-')[1];
-      console.log(index);
-      if (!index) {
-        return;
-      }
-      const value = e.target.value;
-      let transparent = false;
-      if (value === 'Transparent') {
-        transparent = true;
-      }
-      this.updateTransparency(index, transparent);
+  clickElement($element) {
+    $element.on('click', (e) => {
+      this.showProperties = true;
     });
 
   }
@@ -743,7 +733,7 @@ export class UploadConvertComponent implements OnInit {
     this.draggableDiv($element);
     this.resizableDiv($element, shape);
     this.closeButton();
-    // this.selectOnChange();
+    this.clickElement($element);
   }
 
   logout() {
