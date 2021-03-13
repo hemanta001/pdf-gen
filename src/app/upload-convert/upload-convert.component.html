@@ -64,22 +64,31 @@
       </div>
       <div class="form-group">
         <form [formGroup]="fieldProperties">
-        <label for="#">Margin Left</label>
-        <input type="text" class="form-control" formControlName="xcoordinate" placeholder="Margin Left"/>
-        <label for="#">Marging Top</label>
-        <input type="text" class="form-control" formControlName="ycoordinate" placeholder="Marging Top"/>
-        <label for="#">Height</label>
-        <input type="text" class="form-control" formControlName="height" placeholder="Height"/>
-        <label for="#">Width</label>
-        <input type="text" class="form-control" formControlName="width" placeholder="Width"/>
-        <label for="#">Font Type</label>
-        <select class="form-control" formControlName="fontType">
+        <label for="xcoordinate">Margin Left</label>
+        <input type="text" class="form-control" id="xcoordinate" formControlName="xcoordinate" placeholder="Margin Left"/>
+        <label for="ycoordinate">Margin Top</label>
+        <input type="text" class="form-control" id="ycoordinate" formControlName="ycoordinate" placeholder="Margin Top"/>
+          <div *ngIf="!(pdfFieldElements[currentlySelectedPdfFieldIndex]?.shape==='circle' || pdfFieldElements[currentlySelectedPdfFieldIndex]?.shape==='square')">
+        <label for="height">Height</label>
+        <input type="text" class="form-control" id="height" formControlName="height" placeholder="Height"/>
+          </div>
+        <label for="width">Width</label>
+        <input type="text" class="form-control" id="width" formControlName="width" placeholder="Width"/>
+          <div *ngIf="pdfFieldElements[currentlySelectedPdfFieldIndex]?.fieldType==='text'">
+          <label for="transparentOrOpaque">Transparent/Opaque</label>
+          <select class="form-control" id="transparentOrOpaque" formControlName="transparentOrOpaque">
+            <option value="Opaque">Opaque</option>
+            <option value="Transparent">Transparent</option>
+          </select>
+            <label for="fontType">Font Type</label>
+        <select class="form-control" id="fontType" formControlName="fontType">
           <option *ngFor="let fontType of fontTypes" [value]="fontType.value">{{fontType.option}}</option>
         </select>
-        <label for="#">Font Size</label>
-        <select class="form-control" formControlName="fontSize">
+        <label for="fontSize">Font Size</label>
+        <select class="form-control" id="fontSize" formControlName="fontSize">
           <option *ngFor='let number of counter(40) ;let i = index' [value]="i+1">{{i+1}}</option>
         </select>
+          </div>
           <button class="btn btn-primary" type="submit" (click)="toogleProperties()">Confirm</button>
         </form>
         <!--        <label for="#">Field Type</label>-->

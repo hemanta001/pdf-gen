@@ -71,6 +71,7 @@ export class UploadConvertComponent implements OnInit {
       value: 'TimesBoldItalic'
     },
   ];
+  currentlySelectedPdfFieldIndex = 0;
   error: any;
   page = 1;
   rotation = 0;
@@ -114,6 +115,7 @@ export class UploadConvertComponent implements OnInit {
     if (this.page < this.totalPages) {
       this.page = this.page + 1;
       this.divAdd();
+      this.showProperties = false;
     }
   }
 
@@ -136,6 +138,7 @@ export class UploadConvertComponent implements OnInit {
     if (this.page > 1) {
       this.page = this.page - 1;
       this.divAdd();
+      this.showProperties = false;
     }
   }
 
@@ -160,6 +163,29 @@ export class UploadConvertComponent implements OnInit {
 
   toogleProperties() {
     this.showProperties = !this.showProperties;
+    const fieldProperies = this.fieldProperties.value;
+    if (fieldProperies.shape === 'circle' || fieldProperies.shape === 'square') {
+      fieldProperies.height = fieldProperies.width;
+    }
+    fieldProperies.transparent = fieldProperies.transparentOrOpaque === 'Transparent';
+    const windowX = this.getWindowX();
+    const windowY = this.getWindowY();
+    this.pdfFieldElements[this.currentlySelectedPdfFieldIndex] = {
+      "xcoordinate": (fieldProperies.xcoordinate / windowX),
+      "ycoordinate": (fieldProperies.ycoordinate / windowY),
+      "height": fieldProperies.height / windowY,
+      "width": fieldProperies.width / windowX,
+      "isDeleted": false,
+      "pageNum": this.page,
+      "fieldName": fieldProperies.fieldName,
+      "fieldType": fieldProperies.fieldType,
+      "shape": fieldProperies.shape,
+      "transparent": fieldProperies.transparent,
+      "fontType": fieldProperies.fontType,
+      "fontSize": fieldProperies.fontSize
+    };
+    document.getElementsByClassName("page" + this.pdfFieldElements[this.currentlySelectedPdfFieldIndex].pageNum)[0].remove();
+    this.insertFieldToPdf(this.pdfFieldElements[this.currentlySelectedPdfFieldIndex], this.currentlySelectedPdfFieldIndex, windowX, windowY, this.pdfFieldElements[this.currentlySelectedPdfFieldIndex].shape);
   }
 
   counter(i: number) {
@@ -180,6 +206,7 @@ export class UploadConvertComponent implements OnInit {
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
     const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item);
     this.insertFieldToPdf(pdfFieldElement, this.pdfFieldElements.length - 1, windowX, windowY, item.shape);
+    this.currentlySelectedPdfFieldIndex = this.pdfFieldElements.length - 1;
     this.showProperties = !this.showProperties;
   };
 
@@ -212,6 +239,11 @@ export class UploadConvertComponent implements OnInit {
     };
     this.pdfFieldElements.push(pdfFieldElement);
     this.fieldProperties.patchValue(pdfFieldElement);
+    if (pdfFieldElement.transparent) {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+    } else {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+    }
     this.fieldProperties.patchValue({
       xcoordinate: xcoordinate * windowX,
       ycoordinate: ycoordinate * windowY,
@@ -266,23 +298,11 @@ export class UploadConvertComponent implements OnInit {
         $element[0].style.display = 'inline-block';
         break;
       default:
-        let opaqueSelected = `<option value="Opaque">Opaque</option>`;
-        let transparentSelected = `<option value="Transparent">Transparent</option>`;
-        if (pdfFieldElement.transparent) {
-          transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
-        } else {
-          opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
-        }
         $element = $(`<div class="row dropped-field">
        <div class="col-10">
          <div class="row">
            <div class="col-7">
              ${pdfFieldElement.fieldName}
-           </div>
-           <div class="col-5 hide-it">
-             <select name="transparencyType" id='transparencyType-${index}'>
-               ${opaqueSelected}${transparentSelected}
-             </select>
            </div>
          </div>
        </div>
@@ -299,6 +319,11 @@ export class UploadConvertComponent implements OnInit {
 
   updateTransparency(index, transparent) {
     this.pdfFieldElements[index]['transparent'] = transparent;
+    if (this.pdfFieldElements[index].transparent) {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+    } else {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+    }
   }
 
   openOrganizationModal() {
@@ -338,6 +363,19 @@ export class UploadConvertComponent implements OnInit {
       "fontType": this.pdfFieldElements[index].fontType,
       "fontSize": this.pdfFieldElements[index].fontSize
     };
+    const pdfFieldElement = this.pdfFieldElements[index];
+    this.fieldProperties.patchValue(pdfFieldElement);
+    if (pdfFieldElement.transparent) {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+    } else {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+    }
+    this.fieldProperties.patchValue({
+      xcoordinate: xcoordinate * windowX,
+      ycoordinate: ycoordinate * windowY,
+      height: heightCoordinate * windowY,
+      width: widthCoordinate * windowX
+    });
   }
 
   closeButton() {
@@ -633,8 +671,14 @@ export class UploadConvertComponent implements OnInit {
       ycoordinate: [''],
       height: [''],
       width: [''],
+      pageNum: [''],
+      fieldName: [''],
+      transparent: [''],
       fontType: [''],
+      fieldType: [''],
+      shape: [''],
       fontSize: [''],
+      transparentOrOpaque: ['Opaque']
     });
 
   }
@@ -669,6 +713,18 @@ export class UploadConvertComponent implements OnInit {
     const windowY = this.getWindowY();
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
+        this.fieldProperties.patchValue(pdfFieldElement);
+        if (pdfFieldElement.transparent) {
+          this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+        } else {
+          this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+        }
+        this.fieldProperties.patchValue({
+          xcoordinate: pdfFieldElement.xcoordinate * windowX,
+          ycoordinate: pdfFieldElement.ycoordinate * windowY,
+          height: pdfFieldElement.height * windowY,
+          width: pdfFieldElement.width * windowX
+        });
         this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY, pdfFieldElement.shape);
       }
       i++;
@@ -681,7 +737,7 @@ export class UploadConvertComponent implements OnInit {
     this.draggableDiv($element);
     this.resizableDiv($element, shape);
     this.closeButton();
-    this.selectOnChange();
+    // this.selectOnChange();
   }
 
   logout() {
