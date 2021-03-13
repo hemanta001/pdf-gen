@@ -1,4 +1,4 @@
-<div id="formPdf" hidden>
+<div id="formPdf">
   <button class="btn" (click)="logout()">Logout</button>
 
   <form [formGroup]="myForm" (ngSubmit)="submit()">
@@ -22,7 +22,7 @@
     <button class="btn btn-primary" type="submit">Submit</button>
   </form>
 </div>
-<div id="pdfViewer">
+<div id="pdfViewer" hidden="hidden">
   <div class="row" style="position: relative">
     <div class="col-9" style="background-color: #FFFFFF">
       <div id="pdfPage" (resize)="patchValues()" #pdfPage>
