@@ -396,6 +396,23 @@ export class UploadConvertComponent implements OnInit {
   clickElement($element) {
     $element.on('click', (e) => {
       this.showProperties = true;
+      const index = e.currentTarget.getAttribute("index");
+      this.currentlySelectedPdfFieldIndex = index;
+      const pdfFieldElement = this.pdfFieldElements[index];
+      const windowX = this.getWindowX();
+      const windowY = this.getWindowY();
+      this.fieldProperties.patchValue(pdfFieldElement);
+      if (pdfFieldElement.transparent) {
+        this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+      } else {
+        this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+      }
+      this.fieldProperties.patchValue({
+        xcoordinate: pdfFieldElement.xcoordinate * windowX,
+        ycoordinate: pdfFieldElement.ycoordinate * windowY,
+        height: pdfFieldElement.height * windowY,
+        width: pdfFieldElement.width * windowX
+      });
     });
 
   }
