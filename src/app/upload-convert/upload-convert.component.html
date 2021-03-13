@@ -1,4 +1,4 @@
-<div id="formPdf">
+<div id="formPdf" hidden>
   <button class="btn" (click)="logout()">Logout</button>
 
   <form [formGroup]="myForm" (ngSubmit)="submit()">
@@ -22,7 +22,7 @@
     <button class="btn btn-primary" type="submit">Submit</button>
   </form>
 </div>
-<div id="pdfViewer" hidden="hidden">
+<div id="pdfViewer">
   <div class="row" style="position: relative">
     <div class="col-9" style="background-color: #FFFFFF">
       <div id="pdfPage" (resize)="patchValues()" #pdfPage>
@@ -36,6 +36,7 @@
 
     </div>
     <div class="col-3 shadow" id="here" style="background-color: #FFFFFF">
+      <div [hidden]="showProperties">
       <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
         <h4 class="text-center">FIELDS</h4>
       </div>
@@ -56,7 +57,38 @@
             <option value="circle">Image-Circle</option>
           </select>
       </div>
-<!--      <span class="dot" cdkDrag (cdkDragEnded)="drop($event,{title:'testCirlce'},null,'circle')"-->
+      </div>
+      <div [hidden]="!showProperties">
+      <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
+        <h4 class="text-center">PROPERTIES</h4>
+      </div>
+      <div class="form-group">
+        <form [formGroup]="fieldProperties">
+        <label for="#">Margin Left</label>
+        <input type="text" class="form-control" formControlName="xcoordinate" placeholder="Margin Left"/>
+        <label for="#">Marging Top</label>
+        <input type="text" class="form-control" formControlName="ycoordinate" placeholder="Marging Top"/>
+        <label for="#">Height</label>
+        <input type="text" class="form-control" formControlName="height" placeholder="Height"/>
+        <label for="#">Width</label>
+        <input type="text" class="form-control" formControlName="width" placeholder="Width"/>
+        <label for="#">Font Type</label>
+        <select class="form-control" formControlName="fontType">
+          <option *ngFor="let fontType of fontTypes" [value]="fontType.value">{{fontType.option}}</option>
+        </select>
+        <label for="#">Font Size</label>
+        <select class="form-control" formControlName="fontSize">
+          <option *ngFor='let number of counter(40) ;let i = index' [value]="i+1">{{i+1}}</option>
+        </select>
+          <button class="btn btn-primary" type="submit" (click)="toogleProperties()">Confirm</button>
+        </form>
+        <!--        <label for="#">Field Type</label>-->
+<!--        <input type="text" class="form-control" placeholder="Field Type"/>-->
+<!--        <label for="#">Shape</label>-->
+<!--        <input type="text" class="form-control" placeholder="Shape"/>-->
+      </div>
+      </div>
+      <!--      <span class="dot" cdkDrag (cdkDragEnded)="drop($event,{title:'testCirlce'},null,'circle')"-->
 <!--            [cdkDragFreeDragPosition]="dragPosition"-->
 <!--            (cdkDragStarted)="resetDragPosition($event)"></span>-->
 

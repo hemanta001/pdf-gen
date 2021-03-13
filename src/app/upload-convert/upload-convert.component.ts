@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UploadConvertService} from './upload-convert.service';
 import jsPDF from 'jspdf';
 import {PDFDocumentProxy, PDFProgressData, PDFSource} from "../pdf-viewer/pdf-viewer.module";
@@ -28,6 +28,7 @@ export class UploadConvertComponent implements OnInit {
   rtime: any;
   timeout = false;
   delta = 200;
+  showProperties = false;
   multipartImage = [];
   pdfFieldElements: any = [];
   dragPosition = {x: 0, y: 0};
@@ -36,7 +37,40 @@ export class UploadConvertComponent implements OnInit {
   organizationFields: { id: number, name: string, selected: boolean }[];
   processing = false;
   destination = [];
-
+  fontTypes = [
+    {
+      option: 'HELVETICA',
+      value: 'Helv'
+    },
+    {
+      option: 'HELVETICA_BOLD',
+      value: 'HelvBold'
+    },
+    {
+      option: 'HELVETICA_OBLIQUE',
+      value: 'HelvOblique'
+    },
+    {
+      option: 'HELVETICA_BOLD_OBLIQUE',
+      value: 'HelvBoldOblique'
+    },
+    {
+      option: 'TIMES_ROMAN',
+      value: 'TimesRoman'
+    },
+    {
+      option: 'TIMES_BOLD',
+      value: 'TimesBold'
+    },
+    {
+      option: 'TIMES_ITALIC',
+      value: 'TimesItalic'
+    },
+    {
+      option: 'TIMES_BOLD_ITALIC',
+      value: 'TimesBoldItalic'
+    },
+  ];
   error: any;
   page = 1;
   rotation = 0;
@@ -54,7 +88,7 @@ export class UploadConvertComponent implements OnInit {
   outline: any[];
   isOutlineShown = false;
   pdfQuery = '';
-
+  fieldProperties: FormGroup;
   @ViewChild(PdfViewerComponent)
   private pdfComponent: PdfViewerComponent;
 
@@ -69,7 +103,7 @@ export class UploadConvertComponent implements OnInit {
   });
 
   constructor(private http: HttpClient, private _uploadFileService: UploadConvertService, private matDialog: MatDialog,
-              private organizationService: OrganizationService, private router: Router) {
+              private organizationService: OrganizationService, private fb: FormBuilder, private router: Router) {
   }
 
   get f() {
@@ -124,6 +158,14 @@ export class UploadConvertComponent implements OnInit {
     }
   }
 
+  toogleProperties() {
+    this.showProperties = !this.showProperties;
+  }
+
+  counter(i: number) {
+    return new Array(i);
+  }
+
   drop(event, item, i) {
     const element = event.source.getRootElement();
     const boundingClientRect = element.getBoundingClientRect();
@@ -138,6 +180,7 @@ export class UploadConvertComponent implements OnInit {
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
     const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item);
     this.insertFieldToPdf(pdfFieldElement, this.pdfFieldElements.length - 1, windowX, windowY, item.shape);
+    this.showProperties = !this.showProperties;
   };
 
   getWindowX() {
@@ -163,9 +206,18 @@ export class UploadConvertComponent implements OnInit {
       "fieldName": item.title,
       "fieldType": item.fieldType,
       "shape": item.shape,
-      "transparent": false
+      "transparent": false,
+      "fontType": "Helv",
+      "fontSize": 12
     };
     this.pdfFieldElements.push(pdfFieldElement);
+    this.fieldProperties.patchValue(pdfFieldElement);
+    this.fieldProperties.patchValue({
+      xcoordinate: xcoordinate * windowX,
+      ycoordinate: ycoordinate * windowY,
+      height: heightCoordinate * windowY,
+      width: widthCoordinate * windowX
+    });
     return pdfFieldElement;
   }
 
@@ -282,7 +334,9 @@ export class UploadConvertComponent implements OnInit {
       "shape": this.pdfFieldElements[index].shape,
       "fieldType": this.pdfFieldElements[index].fieldType,
       "transparent": this.pdfFieldElements[index].transparent,
-      "fieldName": this.pdfFieldElements[index].fieldName
+      "fieldName": this.pdfFieldElements[index].fieldName,
+      "fontType": this.pdfFieldElements[index].fontType,
+      "fontSize": this.pdfFieldElements[index].fontSize
     };
   }
 
@@ -291,6 +345,7 @@ export class UploadConvertComponent implements OnInit {
       const divToRemove = e.target.closest(".drag-and-resize-div");
       this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
       divToRemove.style.visibility = "hidden";
+      this.showProperties = false;
     });
   }
 
@@ -324,14 +379,15 @@ export class UploadConvertComponent implements OnInit {
       console.log("afteer")
 
       console.log(this.pdfFieldElements[index])
-
+      this.showProperties = true;
     });
   }
 
   draggableDiv($element: any) {
     $element.draggable().bind('dragstop', (e) => {
       const index = e.target.getAttribute("index");
-      this.updateForm(e.target, index)
+      this.updateForm(e.target, index);
+      this.showProperties = true;
     });
   }
 
@@ -491,23 +547,23 @@ export class UploadConvertComponent implements OnInit {
     const target = event.target as HTMLInputElement;
     this.currentFileUpload = (target.files as FileList)[0];
     // if (this.currentFileUpload.type.match(/image\/*/) != null) {
-      if (event.target.files && event.target.files[0]) {
-        var filesAmount = event.target.files.length;
-        for (let i = 0; i < filesAmount; i++) {
-          this.multipartImage.push(event.target.files[i]);
-          var reader = new FileReader();
+    if (event.target.files && event.target.files[0]) {
+      var filesAmount = event.target.files.length;
+      for (let i = 0; i < filesAmount; i++) {
+        this.multipartImage.push(event.target.files[i]);
+        var reader = new FileReader();
 
-          reader.onload = (event: any) => {
-            this.images.push(event.target.result);
+        reader.onload = (event: any) => {
+          this.images.push(event.target.result);
 
-            this.myForm.patchValue({
-              fileSource: this.images
-            });
-          };
+          this.myForm.patchValue({
+            fileSource: this.images
+          });
+        };
 
-          reader.readAsDataURL(event.target.files[i]);
-        }
+        reader.readAsDataURL(event.target.files[i]);
       }
+    }
     // }
     // else {
     //   this.docFile = event.target.files[0];
@@ -557,6 +613,7 @@ export class UploadConvertComponent implements OnInit {
 
   ngOnInit(): void {
     this.f;
+    this.configFieldProperties();
     this.http.get<{ title: string, type: string, shape: string, fieldType: string }[]>(`${environment.baseUrl}getProperties?documentType=IdCard`)
       .subscribe(data => {
           this.fields = data;
@@ -568,6 +625,18 @@ export class UploadConvertComponent implements OnInit {
         this.organizationFields = data;
       }
     );
+  }
+
+  configFieldProperties() {
+    this.fieldProperties = this.fb.group({
+      xcoordinate: [''],
+      ycoordinate: [''],
+      height: [''],
+      width: [''],
+      fontType: [''],
+      fontSize: [''],
+    });
+
   }
 
   reload() {
