@@ -21,7 +21,7 @@ declare var $: any;
 
 
 export class UploadConvertComponent implements OnInit {
-  color = '#FFFFFF';
+  color = '#000000';
   @ViewChild('abc', {static: false}) viewer: ElementRef;
   totalPages: number;
   pdfSrc: string | PDFSource | ArrayBuffer = './assets/abc.pdf';
@@ -402,9 +402,6 @@ export class UploadConvertComponent implements OnInit {
       if (!(e.target.className).includes('close-btn')) {
         this.showProperties = true;
         const index = e.currentTarget.getAttribute("index");
-        console.log(e.target.getAttribute("class"));
-        console.log(e.target.getAttribute("class"));
-
         this.currentlySelectedPdfFieldIndex = index;
         const pdfFieldElement = this.pdfFieldElements[index];
         const windowX = this.getWindowX();
