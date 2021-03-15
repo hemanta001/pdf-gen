@@ -26,76 +26,88 @@
   <div class="row" style="position: relative">
     <div class="col-9" style="background-color: #FFFFFF">
       <div id="pdfPage" (resize)="patchValues()" #pdfPage>
-        <div class="row" style="align-items: center">
-          <div class="col-1" >
-            <a (click)="prev()" style="cursor: pointer; float: right" class="h1 text-center">&#8249;</a>
-          </div>
-          <div class="col-10">
-            <div class="row">
-              <div class="col-12" style="text-align: center">
-                <pdf-viewer id="pdfShow" #abc [(page)]="page" (window:resize)="reload()" [show-all]="false"
-                            [src]="pdfSource"
-                            [render-text]="true" [original-size]='false'
-                            [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
-                >
-                </pdf-viewer>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-12" style="text-align: center">
-                <!--                <div class="input-group">-->
-                <label for="orgName">
-                  Organization Name:
-                </label>
-                <select required="required" id="orgName">
-                  <option *ngFor="let o of organizationFields" value="{{o.id}}" selected="{{o.selected}}">
-                    {{o.name}}
-                  </option>
-                </select>
-                <span class="input-group-btn" style="padding: 0 0 0 5px"><button (click)="openOrganizationModal()"
-                                                      class="btn btn-info text-center" style="width: 3.5rem; height: 1.8rem; padding: 0 0 0 5px">Add</button></span>
-                <!--                </div>-->
-                <br>
-                <label for="document-type">Document Type:</label>
-                <select required="required" id="document-type">
-                  <option value="KYC">KYC</option>
-                  <option value="IDCARD">IDCARD</option>
-                </select>
-                <br>
-                <button (click)="onsubmit()" [disabled]="processing" class="btn btn-success">{{processing ? 'Processing' : 'Submit'}}</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-1">
-            <a (click)="next()" style="cursor: pointer;" class="h1">&#8250;</a>
-          </div>
-        </div>
+          <pdf-viewer id="pdfShow" #abc [(page)]="page" (window:resize)="reload()" [show-all]="false"
+                      [src]="pdfSource"
+                      [render-text]="true" [original-size]='false'
+                      [fit-to-page]='false' (after-load-complete)="afterLoadComplete($event)"
+          >
+          </pdf-viewer>
       </div>
+
     </div>
     <div class="col-3 shadow" id="here" style="background-color: #FFFFFF">
+      <div [hidden]="showProperties">
       <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
         <h4 class="text-center">FIELDS</h4>
       </div>
-      <div
-        id="box{{i}}"
-        *ngFor="let list of fields;let i=index;"
-        cdkDrag
-        (cdkDragEnded)="drop($event,list,i)"
-        [cdkDragFreeDragPosition]="dragPosition"
-        (cdkDragStarted)="resetDragPosition($event)"
-        class="text-center text-white mt-1 "
-        style="background-color: #2C6BB6;"
-      >
+      <div *ngFor="let list of fields;let i=index;">
+        <div id="box{{i}}"
+             cdkDrag
+             (cdkDragEnded)="drop($event,list,i)"
+             [cdkDragFreeDragPosition]="dragPosition"
+             (cdkDragStarted)="resetDragPosition($event)"
+             class="text-center text-white mt-1 " [ngClass]="(list.shape==='circle')?'dot':(list.shape==='rectangle')?'rectangle':(list.shape==='square')?'square':''"
+             style="background-color: #2C6BB6;">
         {{list.title}}
+        </div>
+          <select name="selectShape" id="selectShape" (change)="setFieldTypeAndShape(i,selectShape.value)" #selectShape>
+            <option value="text" selected>Text</option>
+            <option value="rectangle">Image-Rectangle</option>
+            <option value="square">Image-Square</option>
+            <option value="circle">Image-Circle</option>
+          </select>
       </div>
+      </div>
+      <div [hidden]="!showProperties">
+      <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
+        <h4 class="text-center">PROPERTIES</h4>
+      </div>
+      <div class="form-group">
+        <form [formGroup]="fieldProperties">
+        <label for="xcoordinate">Margin Left</label>
+        <input type="text" class="form-control" id="xcoordinate" formControlName="xcoordinate" placeholder="Margin Left"/>
+        <label for="ycoordinate">Margin Top</label>
+        <input type="text" class="form-control" id="ycoordinate" formControlName="ycoordinate" placeholder="Margin Top"/>
+          <div *ngIf="!(pdfFieldElements[currentlySelectedPdfFieldIndex]?.shape==='circle' || pdfFieldElements[currentlySelectedPdfFieldIndex]?.shape==='square')">
+        <label for="height">Height</label>
+        <input type="text" class="form-control" id="height" formControlName="height" placeholder="Height"/>
+          </div>
+        <label for="width">Width</label>
+        <input type="text" class="form-control" id="width" formControlName="width" placeholder="Width"/>
+          <div *ngIf="pdfFieldElements[currentlySelectedPdfFieldIndex]?.fieldType==='text'">
+          <label for="transparentOrOpaque">Transparent/Opaque</label>
+          <select class="form-control" id="transparentOrOpaque" formControlName="transparentOrOpaque">
+            <option value="Opaque">Opaque</option>
+            <option value="Transparent">Transparent</option>
+          </select>
+            <label for="fontType">Font Type</label>
+        <select class="form-control" id="fontType" formControlName="fontType">
+          <option *ngFor="let fontType of fontTypes" [value]="fontType.value">{{fontType.option}}</option>
+        </select>
+        <label for="fontSize">Font Size</label>
+        <select class="form-control" id="fontSize" formControlName="fontSize">
+          <option *ngFor='let number of counter(40) ;let i = index' [value]="i+1">{{i+1}}</option>
+        </select>
+          </div>
+          <button class="btn btn-primary" type="submit" (click)="toogleProperties()">Confirm</button>
+        </form>
+        <!--        <label for="#">Field Type</label>-->
+<!--        <input type="text" class="form-control" placeholder="Field Type"/>-->
+<!--        <label for="#">Shape</label>-->
+<!--        <input type="text" class="form-control" placeholder="Shape"/>-->
+      </div>
+      </div>
+      <!--      <span class="dot" cdkDrag (cdkDragEnded)="drop($event,{title:'testCirlce'},null,'circle')"-->
+<!--            [cdkDragFreeDragPosition]="dragPosition"-->
+<!--            (cdkDragStarted)="resetDragPosition($event)"></span>-->
 
-      <div class="row" hidden>
+      <div class="row dropped-field" hidden>
         <div class="col-10">
           <div class="row" style="border: 2px solid black;">
             <div class="col-7">
               title
             </div>
-            <div class="col-5">
+            <div class="col-5 hide-it">
               <select class="border-0">
                 <option>option 1</option>
                 <option>option 2</option>
@@ -103,12 +115,49 @@
             </div>
           </div>
         </div>
-        <div class="col-2 h1 text-danger font-weight-bold"
+        <div class="col-2 h1 text-danger font-weight-bold hide-it"
              style="cursor: pointer; margin-left: -15px; margin-top: -15px">
           &times;
         </div>
       </div>
 
     </div>
+    <div class="row" style="align-items: center">
+      <div class="col-1" >
+        <a (click)="prev()" style="cursor: pointer; float: right" class="h1 text-center">&#8249;</a>
+      </div>
+      <div class="col-10">
+        <div class="row">
+        </div>
+        <div class="row mt-2">
+          <div class="col-12" style="text-align: center">
+            <!--                <div class="input-group">-->
+            <label for="orgName">
+              Organization Name:
+            </label>
+            <select required="required" id="orgName">
+              <option *ngFor="let o of organizationFields" value="{{o.id}}" selected="{{o.selected}}">
+                {{o.name}}
+              </option>
+            </select>
+            <span class="input-group-btn" style="padding: 0 0 0 5px"><button (click)="openOrganizationModal()"
+                                                                             class="btn btn-info text-center" style="width: 3.5rem; height: 1.8rem; padding: 0 0 0 5px">Add</button></span>
+            <!--                </div>-->
+            <br>
+            <label for="document-type">Document Type:</label>
+            <select required="required" id="document-type">
+              <option value="KYC">KYC</option>
+              <option value="IDCARD">IDCARD</option>
+            </select>
+            <br>
+            <button (click)="onsubmit()" [disabled]="processing" class="btn btn-success">{{processing ? 'Processing' : 'Submit'}}</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-1">
+        <a (click)="next()" style="cursor: pointer;" class="h1">&#8250;</a>
+      </div>
+    </div>
+
   </div>
 </div>

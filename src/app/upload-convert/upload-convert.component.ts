@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {UploadConvertService} from './upload-convert.service';
 import {PDFDocumentProxy, PDFProgressData, PDFSource} from '../pdf-viewer/pdf-viewer.module';
 import {PdfViewerComponent} from '../pdf-viewer/pdf-viewer.component';
@@ -27,14 +27,50 @@ export class UploadConvertComponent implements OnInit {
   rtime: any;
   timeout = false;
   delta = 200;
+  showProperties = false;
+  multipartImage = [];
   pdfFieldElements: any = [];
   dragPosition = {x: 0, y: 0};
   name = 'Angular';
-  fields: { title: string, type: string }[];
+  fields: { title: string, type: string, shape: string, fieldType: string }[];
   organizationFields: { id: number, name: string, selected: boolean }[];
   processing = false;
   destination = [];
-
+  fontTypes = [
+    {
+      option: 'HELVETICA',
+      value: 'Helv'
+    },
+    {
+      option: 'HELVETICA_BOLD',
+      value: 'HeBo'
+    },
+    {
+      option: 'HELVETICA_OBLIQUE',
+      value: 'HeOb'
+    },
+    {
+      option: 'HELVETICA_BOLD_OBLIQUE',
+      value: 'HeBO'
+    },
+    {
+      option: 'TIMES_ROMAN',
+      value: 'TiRo'
+    },
+    {
+      option: 'TIMES_BOLD',
+      value: 'TiBo'
+    },
+    {
+      option: 'TIMES_ITALIC',
+      value: 'TiIt'
+    },
+    {
+      option: 'TIMES_BOLD_ITALIC',
+      value: 'TiBI'
+    },
+  ];
+  currentlySelectedPdfFieldIndex = 0;
   error: any;
   page = 1;
   rotation = 0;
@@ -52,7 +88,7 @@ export class UploadConvertComponent implements OnInit {
   outline: any[];
   isOutlineShown = false;
   pdfQuery = '';
-
+  fieldProperties: FormGroup;
   @ViewChild(PdfViewerComponent)
   private pdfComponent: PdfViewerComponent;
 
@@ -68,7 +104,7 @@ export class UploadConvertComponent implements OnInit {
   });
 
   constructor(private http: HttpClient, private _uploadFileService: UploadConvertService, private matDialog: MatDialog,
-              private organizationService: OrganizationService, private router: Router) {
+              private organizationService: OrganizationService, private fb: FormBuilder, private router: Router) {
   }
 
   get f() {
@@ -79,6 +115,7 @@ export class UploadConvertComponent implements OnInit {
     if (this.page < this.totalPages) {
       this.page = this.page + 1;
       this.divAdd();
+      this.showProperties = false;
     }
   }
 
@@ -88,7 +125,7 @@ export class UploadConvertComponent implements OnInit {
       if (pdfFieldElement.pageNum === this.page) {
         const windowX = this.getWindowX();
         const windowY = this.getWindowY();
-        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
+        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY, pdfFieldElement.shape);
       } else {
         document.getElementsByClassName('page' + pdfFieldElement.pageNum)[0].remove();
       }
@@ -101,6 +138,7 @@ export class UploadConvertComponent implements OnInit {
     if (this.page > 1) {
       this.page = this.page - 1;
       this.divAdd();
+      this.showProperties = false;
     }
   }
 
@@ -123,6 +161,41 @@ export class UploadConvertComponent implements OnInit {
     }
   }
 
+  toogleProperties() {
+    this.showProperties = !this.showProperties;
+    const fieldProperies = this.fieldProperties.value;
+    if (fieldProperies.shape === 'circle' || fieldProperies.shape === 'square') {
+      fieldProperies.height = fieldProperies.width;
+    }
+    if (fieldProperies.transparentOrOpaque === 'Transparent') {
+      fieldProperies.transparent = true;
+    } else {
+      fieldProperies.transparent = false;
+    }
+    const windowX = this.getWindowX();
+    const windowY = this.getWindowY();
+    this.pdfFieldElements[this.currentlySelectedPdfFieldIndex] = {
+      "xcoordinate": (fieldProperies.xcoordinate / windowX),
+      "ycoordinate": (fieldProperies.ycoordinate / windowY),
+      "height": fieldProperies.height / windowY,
+      "width": fieldProperies.width / windowX,
+      "isDeleted": false,
+      "pageNum": this.page,
+      "fieldName": fieldProperies.fieldName,
+      "fieldType": fieldProperies.fieldType,
+      "shape": fieldProperies.shape,
+      "transparent": fieldProperies.transparent,
+      "fontType": fieldProperies.fontType,
+      "fontSize": fieldProperies.fontSize
+    };
+    document.getElementById('pdfFieldElement-' + this.currentlySelectedPdfFieldIndex).remove();
+    this.insertFieldToPdf(this.pdfFieldElements[this.currentlySelectedPdfFieldIndex], this.currentlySelectedPdfFieldIndex, windowX, windowY, this.pdfFieldElements[this.currentlySelectedPdfFieldIndex].shape);
+  }
+
+  counter(i: number) {
+    return new Array(i);
+  }
+
   drop(event, item, i) {
     const element = event.source.getRootElement();
     const boundingClientRect = element.getBoundingClientRect();
@@ -134,9 +207,17 @@ export class UploadConvertComponent implements OnInit {
     }
     const windowX = this.getWindowX();
     const windowY = this.getWindowY();
+<<<<<<< HEAD
     const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop'];
     const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item.title);
     this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
+=======
+    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+    const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item);
+    this.insertFieldToPdf(pdfFieldElement, this.pdfFieldElements.length - 1, windowX, windowY, item.shape);
+    this.currentlySelectedPdfFieldIndex = this.pdfFieldElements.length - 1;
+    this.showProperties = !this.showProperties;
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
   };
 
   getWindowX() {
@@ -147,12 +228,13 @@ export class UploadConvertComponent implements OnInit {
     return (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
   }
 
-  setPdfFieldElements(boundingClientRect: any, windowX: any, windowY: any, scrollTop: any, title: any) {
+  setPdfFieldElements(boundingClientRect: any, windowX: any, windowY: any, scrollTop: any, item: any) {
     const xcoordinate = boundingClientRect.x / windowX;
     const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY;
     const heightCoordinate = boundingClientRect.height / windowY;
     const widthCoordinate = boundingClientRect.width / windowX;
     const pdfFieldElement = {
+<<<<<<< HEAD
       'xcoordinate': xcoordinate,
       'ycoordinate': ycoordinate,
       'height': heightCoordinate,
@@ -161,29 +243,89 @@ export class UploadConvertComponent implements OnInit {
       'pageNum': this.page,
       'fieldName': title,
       'transparent': false
+=======
+      "xcoordinate": xcoordinate,
+      "ycoordinate": ycoordinate,
+      "height": heightCoordinate,
+      "width": widthCoordinate,
+      "isDeleted": false,
+      "pageNum": this.page,
+      "fieldName": item.title,
+      "fieldType": item.fieldType,
+      "shape": item.shape,
+      "transparent": false,
+      "fontType": "Helv",
+      "fontSize": 12
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     };
     this.pdfFieldElements.push(pdfFieldElement);
+    this.fieldProperties.patchValue(pdfFieldElement);
+    if (pdfFieldElement.transparent) {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+    } else {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+    }
+    this.fieldProperties.patchValue({
+      xcoordinate: xcoordinate * windowX,
+      ycoordinate: ycoordinate * windowY,
+      height: heightCoordinate * windowY,
+      width: widthCoordinate * windowX
+    });
     return pdfFieldElement;
   }
 
-  getDroppedDiv(pdfFieldElement: any, windowX: any, windowY: any, index: any) {
-    let opaqueSelected = `<option value="Opaque">Opaque</option>`;
-    let transparentSelected = `<option value="Transparent">Transparent</option>`;
-    if (pdfFieldElement.transparent) {
-      transparentSelected = `<option value="Transparent" selected>Transparent</option>`;
+  setFieldTypeAndShape(index: number, value: string) {
+    if (value === 'text') {
+      this.fields[index].fieldType = value;
+      this.fields[index].shape = null;
     } else {
-      opaqueSelected = `<option value="Opaque" selected>Opaque</option>`;
+      this.fields[index].fieldType = 'image';
+      this.fields[index].shape = value;
     }
-    const $element = $(`<div class="row dropped-field">
+  }
+
+  setCommonStylesAndAttributeForElement($element: any, pdfFieldElement: any, windowX, windowY, index) {
+    $element[0].classList.add('drag-and-resize-div');
+    $element[0].classList.add('page' + this.page);
+    $element[0].style.position = 'absolute';
+    $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
+    $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
+    $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
+    $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
+    $element[0].setAttribute("index", index);
+    $element[0].setAttribute("id", 'pdfFieldElement-' + index);
+
+    if (pdfFieldElement['isDeleted']) {
+      $element[0].style.visibility = 'hidden';
+    }
+    return $element;
+  }
+
+  getDroppedDiv(pdfFieldElement: any, windowX: any, windowY: any, index: any, shape?: any) {
+    let $element = $(`<div></div>`);
+    switch (shape) {
+      case 'circle':
+        $element = this.setCommonStylesAndAttributeForElement($element, pdfFieldElement, windowX, windowY, index);
+        $element[0].style.backgroundColor = '#bbb';
+        $element[0].style.borderRadius = '50%';
+        $element[0].style.display = 'inline-block';
+        break;
+      case 'square':
+        $element = this.setCommonStylesAndAttributeForElement($element, pdfFieldElement, windowX, windowY, index);
+        $element[0].style.backgroundColor = '#bbb';
+        $element[0].style.display = 'inline-block';
+        break;
+      case 'rectangle':
+        $element = this.setCommonStylesAndAttributeForElement($element, pdfFieldElement, windowX, windowY, index);
+        $element[0].style.backgroundColor = '#bbb';
+        $element[0].style.display = 'inline-block';
+        break;
+      default:
+        $element = $(`<div class="row dropped-field">
        <div class="col-10">
          <div class="row">
            <div class="col-7">
              ${pdfFieldElement.fieldName}
-           </div>
-           <div class="col-5 hide-it">
-             <select name="transparencyType" id='transparencyType-${index}'>
-               ${opaqueSelected}${transparentSelected}
-             </select>
            </div>
          </div>
        </div>
@@ -192,6 +334,7 @@ export class UploadConvertComponent implements OnInit {
          &times;
        </div>
      </div>`);
+<<<<<<< HEAD
     $element[0].classList.add('drag-and-resize-div');
     $element[0].classList.add('page' + this.page);
     $element[0].style.position = 'absolute';
@@ -203,12 +346,21 @@ export class UploadConvertComponent implements OnInit {
     $element[0].setAttribute('index', index);
     if (pdfFieldElement['isDeleted']) {
       $element[0].style.visibility = 'hidden';
+=======
+        $element = this.setCommonStylesAndAttributeForElement($element, pdfFieldElement, windowX, windowY, index);
+        $element[0].style.border = "2px solid";
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     }
     return $element;
   }
 
   updateTransparency(index, transparent) {
     this.pdfFieldElements[index]['transparent'] = transparent;
+    if (this.pdfFieldElements[index].transparent) {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+    } else {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+    }
   }
 
   openOrganizationModal() {
@@ -230,7 +382,7 @@ export class UploadConvertComponent implements OnInit {
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
     if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
       event.remove();
-      this.insertFieldToPdf(this.pdfFieldElements[index], windowX, windowY, index);
+      this.insertFieldToPdf(this.pdfFieldElements[index], index, windowX, windowY, this.pdfFieldElements[index].shape);
       return;
     }
     const xcoordinate = boundingClientRect.x / windowX;
@@ -238,6 +390,7 @@ export class UploadConvertComponent implements OnInit {
     const heightCoordinate = boundingClientRect.height / windowY;
     const widthCoordinate = boundingClientRect.width / windowX;
     this.pdfFieldElements[index] = {
+<<<<<<< HEAD
       'xcoordinate': xcoordinate,
       'ycoordinate': ycoordinate,
       'height': heightCoordinate,
@@ -245,52 +398,115 @@ export class UploadConvertComponent implements OnInit {
       'pageNum': this.page,
       'transparent': this.pdfFieldElements[index].transparent,
       'fieldName': this.pdfFieldElements[index].fieldName
+=======
+      "xcoordinate": xcoordinate,
+      "ycoordinate": ycoordinate,
+      "height": heightCoordinate,
+      "width": widthCoordinate,
+      "pageNum": this.page,
+      "shape": this.pdfFieldElements[index].shape,
+      "fieldType": this.pdfFieldElements[index].fieldType,
+      "transparent": this.pdfFieldElements[index].transparent,
+      "fieldName": this.pdfFieldElements[index].fieldName,
+      "fontType": this.pdfFieldElements[index].fontType,
+      "fontSize": this.pdfFieldElements[index].fontSize
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     };
+    const pdfFieldElement = this.pdfFieldElements[index];
+    this.fieldProperties.patchValue(pdfFieldElement);
+    if (pdfFieldElement.transparent) {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+    } else {
+      this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+    }
+    this.fieldProperties.patchValue({
+      xcoordinate: xcoordinate * windowX,
+      ycoordinate: ycoordinate * windowY,
+      height: heightCoordinate * windowY,
+      width: widthCoordinate * windowX
+    });
   }
 
   closeButton() {
     $('.close-btn').on('click', (e) => {
+<<<<<<< HEAD
       const divToRemove = e.target.closest('.drag-and-resize-div');
       this.pdfFieldElements[divToRemove.getAttribute('index')]['isDeleted'] = true;
       divToRemove.style.visibility = 'hidden';
+=======
+      const divToRemove = e.target.closest(".drag-and-resize-div");
+      this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
+      divToRemove.style.visibility = "hidden";
+      this.showProperties = false;
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     });
   }
 
-  selectOnChange() {
-    $('select').on('change', (e) => {
-      const index = e.target.id.split('-')[1];
-      console.log(index);
-      if (!index) {
-        return;
+  clickElement($element) {
+    $element.on('click', (e) => {
+      this.showProperties = true;
+      const index = e.currentTarget.getAttribute("index");
+      this.currentlySelectedPdfFieldIndex = index;
+      const pdfFieldElement = this.pdfFieldElements[index];
+      const windowX = this.getWindowX();
+      const windowY = this.getWindowY();
+      this.fieldProperties.patchValue(pdfFieldElement);
+      if (pdfFieldElement.transparent) {
+        this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+      } else {
+        this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
       }
-      const value = e.target.value;
-      let transparent = false;
-      if (value === 'Transparent') {
-        transparent = true;
-      }
-      this.updateTransparency(index, transparent);
+      this.fieldProperties.patchValue({
+        xcoordinate: pdfFieldElement.xcoordinate * windowX,
+        ycoordinate: pdfFieldElement.ycoordinate * windowY,
+        height: pdfFieldElement.height * windowY,
+        width: pdfFieldElement.width * windowX
+      });
     });
 
   }
 
+<<<<<<< HEAD
   resizableDiv($element: any) {
     $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
       const index = e.target.getAttribute('index');
       this.updateForm(e.target, index);
+=======
+  resizableDiv($element: any, shape: string) {
+    $element.resizable({
+      handles: 'all',
+      cancel: '.ui-dialog-content',
+      aspectRatio: (((shape === 'circle') || (shape === 'square')) ? 4 / 4 : false)
+    }).bind('resizestop', (e) => {
+      const index = e.target.getAttribute("index");
+      console.log("before")
+      console.log(this.pdfFieldElements[index])
+      this.updateForm(e.target, index)
+      console.log("afteer")
+
+      console.log(this.pdfFieldElements[index])
+      this.showProperties = true;
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     });
   }
 
   draggableDiv($element: any) {
     $element.draggable().bind('dragstop', (e) => {
+<<<<<<< HEAD
       const index = e.target.getAttribute('index');
       this.updateForm(e.target, index);
+=======
+      const index = e.target.getAttribute("index");
+      this.updateForm(e.target, index);
+      this.showProperties = true;
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     });
   }
 
   onsubmit() {
     this.processing = true;
     const formdata: FormData = new FormData();
-    formdata.append('file', this.fileToUpload);
+    formdata.append('file', this.pdfSource);
     this.pdfFieldElements = this.pdfFieldElements.filter((pdfElem) => {
       if (!pdfElem.isDeleted) {
         return delete pdfElem['isDeleted'];
@@ -460,6 +676,16 @@ export class UploadConvertComponent implements OnInit {
         reader.readAsDataURL(event.target.files[i]);
       }
     }
+    // }
+    // else {
+    //   this.docFile = event.target.files[0];
+    //   if (event.target.files[0].type === 'application/pdf') {
+    //     this.fileToUpload = event.target.files[0];
+    //   } else {
+    //     console.log('aru ta paidaina');
+    //   }
+    //   console.log(this.docFile);
+    // }
   }
 
   submit() {
@@ -468,6 +694,11 @@ export class UploadConvertComponent implements OnInit {
     this.multipartImage.forEach(file => {
       formData.append('files', file);
     });
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     this._uploadFileService
       .pushFileToStorage(formData)
       .subscribe(event => {
@@ -486,7 +717,8 @@ export class UploadConvertComponent implements OnInit {
 
   ngOnInit(): void {
     this.f;
-    this.http.get<{ title: string, type: string }[]>(`${environment.baseUrl}getProperties?documentType=IdCard`)
+    this.configFieldProperties();
+    this.http.get<{ title: string, type: string, shape: string, fieldType: string }[]>(`${environment.baseUrl}getProperties?documentType=IdCard`)
       .subscribe(data => {
           this.fields = data;
         }
@@ -497,6 +729,24 @@ export class UploadConvertComponent implements OnInit {
         this.organizationFields = data;
       }
     );
+  }
+
+  configFieldProperties() {
+    this.fieldProperties = this.fb.group({
+      xcoordinate: [''],
+      ycoordinate: [''],
+      height: [''],
+      width: [''],
+      pageNum: [''],
+      fieldName: [''],
+      transparent: [''],
+      fontType: [''],
+      fieldType: [''],
+      shape: [''],
+      fontSize: [''],
+      transparentOrOpaque: ['Opaque']
+    });
+
   }
 
   reload() {
@@ -529,19 +779,31 @@ export class UploadConvertComponent implements OnInit {
     const windowY = this.getWindowY();
     for (const pdfFieldElement of this.pdfFieldElements) {
       if (pdfFieldElement.pageNum === this.page) {
-        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
+        this.fieldProperties.patchValue(pdfFieldElement);
+        if (pdfFieldElement.transparent) {
+          this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+        } else {
+          this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+        }
+        this.fieldProperties.patchValue({
+          xcoordinate: pdfFieldElement.xcoordinate * windowX,
+          ycoordinate: pdfFieldElement.ycoordinate * windowY,
+          height: pdfFieldElement.height * windowY,
+          width: pdfFieldElement.width * windowX
+        });
+        this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY, pdfFieldElement.shape);
       }
       i++;
     }
   }
 
-  insertFieldToPdf(pdfFieldElement: any, index: any, windowX: any, windowY: any) {
-    const $element = this.getDroppedDiv(pdfFieldElement, windowX, windowY, index);
+  insertFieldToPdf(pdfFieldElement: any, index: any, windowX: any, windowY: any, shape?: any) {
+    const $element = this.getDroppedDiv(pdfFieldElement, windowX, windowY, index, shape);
     $('#pdfPage').append($element);
-    this.closeButton();
     this.draggableDiv($element);
-    this.resizableDiv($element);
-    this.selectOnChange();
+    this.resizableDiv($element, shape);
+    this.closeButton();
+    this.clickElement($element);
   }
 
   logout() {

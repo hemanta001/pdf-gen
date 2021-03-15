@@ -11,6 +11,11 @@ export class UploadConvertService {
   }
 
   pushFileToStorage(files: any): Observable<HttpEvent<{}>> {
+<<<<<<< HEAD
+=======
+    // const formdata: FormData = new FormData();
+    // formdata.append('file', file);
+>>>>>>> 33c350bbe204be0d8e2fd5411d0f8d659a3b3bc9
     const req = new HttpRequest('POST', 'http://localhost:8080/api/upload', files, {
       reportProgress: true,
       responseType: 'text'

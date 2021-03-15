@@ -199,4 +199,21 @@
     width: 100%;
   }
 }
+.square {
+  height: 100px;
+  width: 100px;
+  background-color: #bbb;
+}
+.rectangle {
+  height: 150px;
+  width: 200px;
+  background-color: #bbb;
+}
+
+.dot {
+  height: 250px;
+  width: 250px;
+  background-color: #bbb;
+  border-radius: 50%;
+}
 
