@@ -242,7 +242,7 @@ export class UploadConvertComponent implements OnInit {
       "transparent": false,
       "fontType": "Helv",
       "fontSize": 12,
-      "fontColor": this.color
+      "fontColor": "#000000"
     };
     this.pdfFieldElements.push(pdfFieldElement);
     this.fieldProperties.patchValue(pdfFieldElement);
