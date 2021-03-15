@@ -10,10 +10,8 @@ export class UploadConvertService {
   constructor(private http: HttpClient) {
   }
 
-  pushFileToStorage(file: any): Observable<HttpEvent<{}>> {
-    const formdata: FormData = new FormData();
-    formdata.append('file', file);
-    const req = new HttpRequest('POST', 'http://localhost:8080/api/upload', formdata, {
+  pushFileToStorage(files: any): Observable<HttpEvent<{}>> {
+    const req = new HttpRequest('POST', 'http://localhost:8080/api/upload', files, {
       reportProgress: true,
       responseType: 'text'
     });

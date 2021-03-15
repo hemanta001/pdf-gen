@@ -2,14 +2,13 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {UploadConvertService} from './upload-convert.service';
-import jsPDF from 'jspdf';
-import {PDFDocumentProxy, PDFProgressData, PDFSource} from "../pdf-viewer/pdf-viewer.module";
-import {PdfViewerComponent} from "../pdf-viewer/pdf-viewer.component";
-import {MatDialog} from "@angular/material/dialog";
-import {ModalOrganizationComponent} from "../modals/modal-organization/modal-organization.component";
-import {OrganizationService} from "../organization/service/organization.service";
-import {Router} from "@angular/router";
-import {environment} from "../../environments/environment";
+import {PDFDocumentProxy, PDFProgressData, PDFSource} from '../pdf-viewer/pdf-viewer.module';
+import {PdfViewerComponent} from '../pdf-viewer/pdf-viewer.component';
+import {MatDialog} from '@angular/material/dialog';
+import {ModalOrganizationComponent} from '../modals/modal-organization/modal-organization.component';
+import {OrganizationService} from '../organization/service/organization.service';
+import {Router} from '@angular/router';
+import {environment} from '../../environments/environment';
 
 declare var $: any;
 
@@ -58,6 +57,7 @@ export class UploadConvertComponent implements OnInit {
   private pdfComponent: PdfViewerComponent;
 
   images = [];
+  multipartImage = [];
   docFile = File;
   currentFileUpload: File;
   fileToUpload: any;
@@ -90,7 +90,7 @@ export class UploadConvertComponent implements OnInit {
         const windowY = this.getWindowY();
         this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
       } else {
-        document.getElementsByClassName("page" + pdfFieldElement.pageNum)[0].remove();
+        document.getElementsByClassName('page' + pdfFieldElement.pageNum)[0].remove();
       }
       i++;
     }
@@ -134,7 +134,7 @@ export class UploadConvertComponent implements OnInit {
     }
     const windowX = this.getWindowX();
     const windowY = this.getWindowY();
-    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop'];
     const pdfFieldElement = this.setPdfFieldElements(boundingClientRect, windowX, windowY, scrollTop, item.title);
     this.insertFieldToPdf(pdfFieldElement, i, windowX, windowY);
   };
@@ -153,14 +153,14 @@ export class UploadConvertComponent implements OnInit {
     const heightCoordinate = boundingClientRect.height / windowY;
     const widthCoordinate = boundingClientRect.width / windowX;
     const pdfFieldElement = {
-      "xcoordinate": xcoordinate,
-      "ycoordinate": ycoordinate,
-      "height": heightCoordinate,
-      "width": widthCoordinate,
-      "isDeleted": false,
-      "pageNum": this.page,
-      "fieldName": title,
-      "transparent": false
+      'xcoordinate': xcoordinate,
+      'ycoordinate': ycoordinate,
+      'height': heightCoordinate,
+      'width': widthCoordinate,
+      'isDeleted': false,
+      'pageNum': this.page,
+      'fieldName': title,
+      'transparent': false
     };
     this.pdfFieldElements.push(pdfFieldElement);
     return pdfFieldElement;
@@ -196,11 +196,11 @@ export class UploadConvertComponent implements OnInit {
     $element[0].classList.add('page' + this.page);
     $element[0].style.position = 'absolute';
     $element[0].style.marginLeft = (pdfFieldElement.xcoordinate * windowX) + 'px';
-    $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById("pdfPage").offsetHeight + 'px';
-    $element[0].style.border = "2px solid";
+    $element[0].style.marginTop = ((pdfFieldElement.ycoordinate - pdfFieldElement.height) * windowY) - document.getElementById('pdfPage').offsetHeight + 'px';
+    $element[0].style.border = '2px solid';
     $element[0].style.height = (pdfFieldElement.height * windowY) + 'px';
     $element[0].style.width = (pdfFieldElement.width * windowX) + 'px';
-    $element[0].setAttribute("index", index);
+    $element[0].setAttribute('index', index);
     if (pdfFieldElement['isDeleted']) {
       $element[0].style.visibility = 'hidden';
     }
@@ -217,13 +217,15 @@ export class UploadConvertComponent implements OnInit {
       height: '550px',
     });
     dialogRef.afterClosed().subscribe(data => {
-      if (data != undefined) this.organizationFields.push(data);
-    })
+      if (data != undefined) {
+        this.organizationFields.push(data);
+      }
+    });
   }
 
   updateForm(event, index) {
     const boundingClientRect = event.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop']
+    const scrollTop = window.pageYOffset || (document.documentElement || document.body.parentNode || document.body)['scrollTop'];
     const windowX = (document.getElementsByClassName('textLayer')[0]['offsetWidth']);
     const windowY = (document.getElementsByClassName('textLayer')[0]['offsetHeight']);
     if (!this.checkIfDropExistsInPdfView(boundingClientRect)) {
@@ -232,25 +234,25 @@ export class UploadConvertComponent implements OnInit {
       return;
     }
     const xcoordinate = boundingClientRect.x / windowX;
-    const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY
+    const ycoordinate = (boundingClientRect.y + boundingClientRect.height + scrollTop) / windowY;
     const heightCoordinate = boundingClientRect.height / windowY;
     const widthCoordinate = boundingClientRect.width / windowX;
     this.pdfFieldElements[index] = {
-      "xcoordinate": xcoordinate,
-      "ycoordinate": ycoordinate,
-      "height": heightCoordinate,
-      "width": widthCoordinate,
-      "pageNum": this.page,
-      "transparent": this.pdfFieldElements[index].transparent,
-      "fieldName": this.pdfFieldElements[index].fieldName
+      'xcoordinate': xcoordinate,
+      'ycoordinate': ycoordinate,
+      'height': heightCoordinate,
+      'width': widthCoordinate,
+      'pageNum': this.page,
+      'transparent': this.pdfFieldElements[index].transparent,
+      'fieldName': this.pdfFieldElements[index].fieldName
     };
   }
 
   closeButton() {
     $('.close-btn').on('click', (e) => {
-      const divToRemove = e.target.closest(".drag-and-resize-div");
-      this.pdfFieldElements[divToRemove.getAttribute("index")]['isDeleted'] = true;
-      divToRemove.style.visibility = "hidden";
+      const divToRemove = e.target.closest('.drag-and-resize-div');
+      this.pdfFieldElements[divToRemove.getAttribute('index')]['isDeleted'] = true;
+      divToRemove.style.visibility = 'hidden';
     });
   }
 
@@ -273,15 +275,15 @@ export class UploadConvertComponent implements OnInit {
 
   resizableDiv($element: any) {
     $element.resizable({handles: 'all', cancel: '.ui-dialog-content',}).bind('resizestop', (e) => {
-      const index = e.target.getAttribute("index");
-      this.updateForm(e.target, index)
+      const index = e.target.getAttribute('index');
+      this.updateForm(e.target, index);
     });
   }
 
   draggableDiv($element: any) {
     $element.draggable().bind('dragstop', (e) => {
-      const index = e.target.getAttribute("index");
-      this.updateForm(e.target, index)
+      const index = e.target.getAttribute('index');
+      this.updateForm(e.target, index);
     });
   }
 
@@ -294,10 +296,10 @@ export class UploadConvertComponent implements OnInit {
         return delete pdfElem['isDeleted'];
       }
     });
-    formdata.append("pdfFieldElementsList", JSON.stringify(this.pdfFieldElements));
+    formdata.append('pdfFieldElementsList', JSON.stringify(this.pdfFieldElements));
     this.http.post(`${environment.baseUrl}api/securedid/secured/pdf/update/${$('#orgName').val()}/${$('#document-type').val()}`, formdata).subscribe(data => {
       this.processing = false;
-      alert(data["response"])
+      alert(data['response']);
       location.reload();
     });
   }
@@ -440,75 +442,47 @@ export class UploadConvertComponent implements OnInit {
   onFileChange(event) {
     const target = event.target as HTMLInputElement;
     this.currentFileUpload = (target.files as FileList)[0];
-    if (this.currentFileUpload.type.match(/image\/*/) != null) {
-      if (event.target.files && event.target.files[0]) {
-        var filesAmount = event.target.files.length;
-        for (let i = 0; i < filesAmount; i++) {
-          var reader = new FileReader();
+    // if (this.currentFileUpload.type.match(/image\/*/) != null) {
+    if (event.target.files && event.target.files[0]) {
+      var filesAmount = event.target.files.length;
+      for (let i = 0; i < filesAmount; i++) {
+        this.multipartImage.push(event.target.files[i]);
+        var reader = new FileReader();
 
-          reader.onload = (event: any) => {
-            this.images.push(event.target.result);
+        reader.onload = (event: any) => {
+          this.images.push(event.target.result);
 
-            this.myForm.patchValue({
-              fileSource: this.images
-            });
-          };
+          this.myForm.patchValue({
+            fileSource: this.images
+          });
+        };
 
-          reader.readAsDataURL(event.target.files[i]);
-        }
+        reader.readAsDataURL(event.target.files[i]);
       }
-    } else {
-      this.docFile = event.target.files[0];
-      if (event.target.files[0].type === 'application/pdf') {
-        this.fileToUpload = event.target.files[0];
-      } else {
-        console.log('aru ta paidaina');
-      }
-      console.log(this.docFile);
     }
   }
 
   submit() {
-    if (this.images.length > 0) {
-      let doc = new jsPDF('p', 'mm', 'a4', true);
-      for (var i = 0; i < this.images.length; i++) {
-        let imageData = this.getBase64Image(document.getElementById('img' + i));
-        doc.addImage(imageData, 'JPEG', 10, 10, 190, 270, undefined, 'FAST');
-        if (i !== this.images.length - 1) {
-          doc.addPage();
+    const formData = new FormData();
+
+    this.multipartImage.forEach(file => {
+      formData.append('files', file);
+    });
+    this._uploadFileService
+      .pushFileToStorage(formData)
+      .subscribe(event => {
+        console.log(event);
+        if (event instanceof HttpResponse) {
+          this.pdfSource = (event.body as string);
+
+          document.getElementById('formPdf').setAttribute('hidden', 'hidden');
+
+          document.getElementById('pdfViewer').removeAttribute('hidden');
         }
-      }
-      this.fileToUpload = doc.output('blob');
-      // doc.save('Test.pdf');
-    }
-    if (this.fileToUpload !== null) {
-      this._uploadFileService
-        .pushFileToStorage(this.fileToUpload)
-        .subscribe(event => {
-          console.log(event);
-          if (event instanceof HttpResponse) {
-            this.pdfSource = (event.body as string);
-
-            document.getElementById('formPdf').setAttribute('hidden', 'hidden');
-
-            document.getElementById('pdfViewer').removeAttribute('hidden');
-          }
-        });
-      console.log('file submit');
-    }
+      });
+    console.log('file submit');
   }
 
-  getBase64Image(img) {
-    var canvas = document.createElement('canvas');
-    canvas.width = 3508;
-    canvas.height = 2480;
-    var ctx = canvas.getContext('2d');
-    // ctx.drawImage(img, 0, 0);
-    ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight,     // source rectangle
-      0, 0, canvas.width, canvas.height);
-    var dataURL = canvas.toDataURL('image/jpeg', 0.8);
-    return dataURL;
-  }
 
   ngOnInit(): void {
     this.f;
@@ -519,7 +493,7 @@ export class UploadConvertComponent implements OnInit {
       );
 
     this.organizationService.getOrganizations().subscribe(data => {
-        data["selected"] = false;
+        data['selected'] = false;
         this.organizationFields = data;
       }
     );
@@ -571,8 +545,8 @@ export class UploadConvertComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem("token");
-    this.router.navigate(["/login"]);
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
 }
