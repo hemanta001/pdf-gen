@@ -21,46 +21,48 @@ import {IdCardState} from './add-user-info/store/id-card.state';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {MyDatePickerModule} from 'mydatepicker';
 import {ImageCropperModule} from "ngx-image-cropper";
+import {ColorPickerModule} from 'ngx-color-picker';
 
 @NgModule({
-    declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent, LoginComponent],
-    imports: [
-      ImageCropperModule,
-        BrowserModule,
-        NgxsModule.forRoot([
-            IdCardState
-        ]),
-        MyDatePickerModule,
-        ReactiveFormsModule,
-        HttpClientModule,
-        FormsModule,
-        DragDropModule,
-        NoopAnimationsModule,
-        RouterModule.forRoot([{
-            path: '',
-            component: UploadConvertComponent,
-            canActivate: [AuthGuard]
-        },
-            {
-                path: 'pdf-download',
-                component: PdfDownloadComponent
-            },
-            {
-                path: 'add-info',
-                component: AddUserInfoComponent,
-                canActivate: [AuthGuard]
-            },
-            {
-                path: 'login',
-                component: LoginComponent
-            }]),
-        DemoMaterialModule,
-        AngularResizedEventModule,
-        PdfViewerModule,
-        NgbModule
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
+  declarations: [AppComponent, UploadConvertComponent, PdfDownloadComponent, AddUserInfoComponent, ModalOrganizationComponent, LoginComponent],
+  imports: [
+    ImageCropperModule,
+    BrowserModule,
+    NgxsModule.forRoot([
+      IdCardState
+    ]),
+    ColorPickerModule,
+    MyDatePickerModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    FormsModule,
+    DragDropModule,
+    NoopAnimationsModule,
+    RouterModule.forRoot([{
+      path: '',
+      component: UploadConvertComponent,
+      canActivate: [AuthGuard]
+    },
+      {
+        path: 'pdf-download',
+        component: PdfDownloadComponent
+      },
+      {
+        path: 'add-info',
+        component: AddUserInfoComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'login',
+        component: LoginComponent
+      }]),
+    DemoMaterialModule,
+    AngularResizedEventModule,
+    PdfViewerModule,
+    NgbModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

@@ -21,6 +21,7 @@ declare var $: any;
 
 
 export class UploadConvertComponent implements OnInit {
+  color = '#FFFFFF';
   @ViewChild('abc', {static: false}) viewer: ElementRef;
   totalPages: number;
   pdfSrc: string | PDFSource | ArrayBuffer = './assets/abc.pdf';
@@ -110,7 +111,6 @@ export class UploadConvertComponent implements OnInit {
   get f() {
     return this.myForm.controls;
   }
-
   next() {
     if (this.page < this.totalPages) {
       this.page = this.page + 1;
@@ -186,7 +186,8 @@ export class UploadConvertComponent implements OnInit {
       "shape": fieldProperies.shape,
       "transparent": fieldProperies.transparent,
       "fontType": fieldProperies.fontType,
-      "fontSize": fieldProperies.fontSize
+      "fontSize": fieldProperies.fontSize,
+      "fontColor": fieldProperies.fontColor
     };
     document.getElementById('pdfFieldElement-' + this.currentlySelectedPdfFieldIndex).remove();
     this.insertFieldToPdf(this.pdfFieldElements[this.currentlySelectedPdfFieldIndex], this.currentlySelectedPdfFieldIndex, windowX, windowY, this.pdfFieldElements[this.currentlySelectedPdfFieldIndex].shape);
@@ -239,7 +240,8 @@ export class UploadConvertComponent implements OnInit {
       "shape": item.shape,
       "transparent": false,
       "fontType": "Helv",
-      "fontSize": 12
+      "fontSize": 12,
+      "fontColor": this.color
     };
     this.pdfFieldElements.push(pdfFieldElement);
     this.fieldProperties.patchValue(pdfFieldElement);
@@ -367,7 +369,8 @@ export class UploadConvertComponent implements OnInit {
       "transparent": this.pdfFieldElements[index].transparent,
       "fieldName": this.pdfFieldElements[index].fieldName,
       "fontType": this.pdfFieldElements[index].fontType,
-      "fontSize": this.pdfFieldElements[index].fontSize
+      "fontSize": this.pdfFieldElements[index].fontSize,
+      "fontColor": this.pdfFieldElements[index].fontColor
     };
     const pdfFieldElement = this.pdfFieldElements[index];
     this.fieldProperties.patchValue(pdfFieldElement);
@@ -691,6 +694,7 @@ export class UploadConvertComponent implements OnInit {
       fieldType: [''],
       shape: [''],
       fontSize: [''],
+      fontColor: [''],
       transparentOrOpaque: ['Opaque']
     });
 
