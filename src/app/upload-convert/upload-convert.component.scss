@@ -216,4 +216,14 @@
   background-color: #bbb;
   border-radius: 50%;
 }
+.rowT {
+  display: flex; /* equal height of the children */
+}
+
+.colT {
+  flex: 1; /* additionally, equal width */
+
+  padding: 1em;
+  border: solid;
+}
 

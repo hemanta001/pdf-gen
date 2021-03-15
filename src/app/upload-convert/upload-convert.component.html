@@ -1,4 +1,4 @@
-<div id="formPdf" hidden>
+<div id="formPdf">
   <button class="btn" (click)="logout()">Logout</button>
 
   <form [formGroup]="myForm" (ngSubmit)="submit()">
@@ -22,7 +22,7 @@
     <button class="btn btn-primary" type="submit">Submit</button>
   </form>
 </div>
-<div id="pdfViewer">
+<div id="pdfViewer" hidden="hidden">
   <div class="row" style="position: relative">
     <div class="col-9" style="background-color: #FFFFFF">
       <div id="pdfPage" (resize)="patchValues()" #pdfPage>
@@ -35,8 +35,8 @@
       </div>
 
     </div>
-    <div class="col-3 shadow" id="here" style="background-color: #FFFFFF">
-      <div [hidden]="showProperties">
+    <div class="rowT col-3 shadow" id="here" style="background-color: #FFFFFF">
+      <div [hidden]="showProperties" class="colT">
         <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
           <h4 class="text-center">FIELDS</h4>
         </div>
@@ -59,7 +59,7 @@
           </select>
         </div>
       </div>
-      <div [hidden]="!showProperties">
+      <div [hidden]="!showProperties" class="colT">
         <div style="background-color: #0C9890; height: 50px" class="text-white  p-2 shadow">
           <h4 class="text-center">PROPERTIES</h4>
         </div>

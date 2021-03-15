@@ -111,6 +111,7 @@ export class UploadConvertComponent implements OnInit {
   get f() {
     return this.myForm.controls;
   }
+
   next() {
     if (this.page < this.totalPages) {
       this.page = this.page + 1;
@@ -398,24 +399,29 @@ export class UploadConvertComponent implements OnInit {
 
   clickElement($element) {
     $element.on('click', (e) => {
-      this.showProperties = true;
-      const index = e.currentTarget.getAttribute("index");
-      this.currentlySelectedPdfFieldIndex = index;
-      const pdfFieldElement = this.pdfFieldElements[index];
-      const windowX = this.getWindowX();
-      const windowY = this.getWindowY();
-      this.fieldProperties.patchValue(pdfFieldElement);
-      if (pdfFieldElement.transparent) {
-        this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
-      } else {
-        this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+      if (!(e.target.className).includes('close-btn')) {
+        this.showProperties = true;
+        const index = e.currentTarget.getAttribute("index");
+        console.log(e.target.getAttribute("class"));
+        console.log(e.target.getAttribute("class"));
+
+        this.currentlySelectedPdfFieldIndex = index;
+        const pdfFieldElement = this.pdfFieldElements[index];
+        const windowX = this.getWindowX();
+        const windowY = this.getWindowY();
+        this.fieldProperties.patchValue(pdfFieldElement);
+        if (pdfFieldElement.transparent) {
+          this.fieldProperties.patchValue({transparentOrOpaque: 'Transparent'});
+        } else {
+          this.fieldProperties.patchValue({transparentOrOpaque: 'Opaque'});
+        }
+        this.fieldProperties.patchValue({
+          xcoordinate: pdfFieldElement.xcoordinate * windowX,
+          ycoordinate: pdfFieldElement.ycoordinate * windowY,
+          height: pdfFieldElement.height * windowY,
+          width: pdfFieldElement.width * windowX
+        });
       }
-      this.fieldProperties.patchValue({
-        xcoordinate: pdfFieldElement.xcoordinate * windowX,
-        ycoordinate: pdfFieldElement.ycoordinate * windowY,
-        height: pdfFieldElement.height * windowY,
-        width: pdfFieldElement.width * windowX
-      });
     });
 
   }
